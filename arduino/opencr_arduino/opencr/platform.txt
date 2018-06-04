@@ -128,3 +128,14 @@ tools.dfu_util.erase.pattern=
 tools.dfu_util.bootloader.params.verbose=-v -v -v -v
 tools.dfu_util.bootloader.params.quiet=-q -q
 tools.dfu_util.bootloader.pattern="{path}/{cmd}" -d 0483:df11 -a 0 -s 0x08000000 -D "{runtime.platform.path}/bootloaders/{bootloader.file}"
+
+######
+tools.pscp.cmd=scp
+tools.pscp.cmd.windows=pscp.exe
+tools.pscp.path.linux=/usr/bin
+tools.pscp.path.windows=C:/Program Files/PuTTY
+
+tools.pscp.upload.params.verbose=-d
+tools.pscp.upload.params.quiet=n
+tools.pscp.upload.pattern="{path}/{cmd}" "{build.path}/{build.project_name}.bin" "OpenCR_Host:./opencr_update/opencr_upload.bin"
+tools.pscp.upload.pattern.windows="{path}/{cmd}" "-batch" "{build.path}/{build.project_name}.bin" "OpenCR_Host:./opencr_update/opencr_upload.bin"

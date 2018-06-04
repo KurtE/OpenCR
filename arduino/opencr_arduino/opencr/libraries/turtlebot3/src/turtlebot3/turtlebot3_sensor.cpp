@@ -31,9 +31,11 @@ bool Turtlebot3Sensor::init(void)
 {
   DEBUG_SERIAL.begin(57600);
 
+#ifdef EXTERNAL_SENSOR_CODE
   initBumper();
   initIR();
   initSonar();
+#endif
   initLED();
 
   uint8_t get_error_code = 0x00;
@@ -292,6 +294,7 @@ void Turtlebot3Sensor::makeSound(uint8_t index)
   melody(note, 8, duration);
 }
 
+#ifdef EXTERNAL_SENSOR_CODE
 void Turtlebot3Sensor::initBumper(void)
 {
   ollo_.begin(3, TOUCH_SENSOR);
@@ -373,6 +376,7 @@ float Turtlebot3Sensor::getSonarData(void)
 
   return distance;
 }
+#endif
 
 float Turtlebot3Sensor::getIlluminationData(void)
 {

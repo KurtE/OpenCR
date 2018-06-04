@@ -1,0 +1,1354 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"pu",
+				"publishVelocityCmd"
+			],
+			[
+				"sta",
+				"state_changed_"
+			],
+			[
+				"Tur",
+				"turtlebot3_msgs"
+			],
+			[
+				"advertis",
+				"advertised_"
+			],
+			[
+				"ILI",
+				"ILI9341_t3n"
+			],
+			[
+				"_dma",
+				"_dma_count_remaining"
+			],
+			[
+				"uint",
+				"uint16_t"
+			],
+			[
+				"sou",
+				"sourceBuffer"
+			],
+			[
+				"0x0",
+				"0x041b"
+			],
+			[
+				"g_serv",
+				"g_servo_index_voltage"
+			],
+			[
+				"DXL_GOA",
+				"DXL_X_GOAL_VELOCITY"
+			],
+			[
+				"Re",
+				"ReportAnyErrors"
+			],
+			[
+				"uin",
+				"uint32_t"
+			],
+			[
+				"count",
+				"count_handlers_"
+			],
+			[
+				"servo_",
+				"servo_info_t"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "/C/Users/kurte/AppData/Local/Temp/scp55347/home/kurt/catkin_ws/src/turtlebot3_safety/src/turtlebot3_safety.cpp",
+			"settings":
+			{
+				"buffer_size": 5657,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/C/Users/kurte/AppData/Local/Temp/scp44314/home/kurt/catkin_ws/src/turtlebot3_safety/include/turtlebot3_safety.h",
+			"settings":
+			{
+				"buffer_size": 2253,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/C/Users/kurte/Documents/Arduino/TurtleBot/up_turtlebot_waffle_ir_cliff/up_turtlebot_waffle_ir_cliff.ino",
+			"settings":
+			{
+				"buffer_size": 23908,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/C/Users/kurte/Documents/Arduino/TurtleBot/up_turtlebot_waffle_ir_cliff/turtlebot3_core_config.h",
+			"settings":
+			{
+				"buffer_size": 10030,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "<!-- Example/standalone launcher for Turtlebot3's safety controller -->\n\n<launch>\n  <node pkg=\"nodelet\" type=\"nodelet\" name=\"nodelet_manager\"  args=\"manager\"/>\n  <node pkg=\"nodelet\" type=\"nodelet\" name=\"turtlebot3_safety_controller\" args=\"load turtlebot3_safety_controller/SafetyControllerNodelet nodelet_manager\">\n    <remap from=\"turtlebot3_safety_controller/enable\" to=\"enable\"/>\n    <remap from=\"turtlebot3_safety_controller/disable\" to=\"disable\"/>\n    <remap from=\"turtlebot3_safety_controller/reset\" to=\"reset\"/>\n    <remap from=\"turtlebot3_safety_controller/cmd_vel\" to=\"cmd_vel\"/>\n    <remap from=\"turtlebot3_safety_controller/events/bumper\" to=\"events/bumper\"/>\n    <remap from=\"turtlebot3_safety_controller/events/cliff\" to=\"events/cliff\"/>\n    <remap from=\"turtlebot3_safety_controller/events/wheel_drop\" to=\"events/wheel_drop\"/>\n  </node>\n</launch>",
+			"file": "/D/GitHub/turtlebot3/turtlebot3_safety_controller/launch/standalone.launch",
+			"file_size": 833,
+			"file_write_time": 131721982891579166,
+			"settings":
+			{
+				"buffer_size": 860,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"contents": "<library path=\"lib/libMyNodeletClass\">\n  <class name=\"example_pkg/MyNodeletClass\" type=\"example_pkg::MyNodeletClass\" base_class_type=\"nodelet::Nodelet\">\n  <description>\n  This is my nodelet.\n  </description>\n  </class>\n</library>",
+			"file": "/D/GitHub/turtlebot3/turtlebot3_safety_controller/plugins/nodelet_plugins.xml",
+			"file_size": 310,
+			"file_write_time": 131721982891579166,
+			"settings":
+			{
+				"buffer_size": 229,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/D/GitHub/OpenCR/arduino/opencr_arduino/opencr/variants/OpenCR/hw/driver/drv_uart.h",
+			"settings":
+			{
+				"buffer_size": 958,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/D/GitHub/OpenCR/arduino/opencr_arduino/opencr/variants/OpenCR/hw/driver/drv_uart.c",
+			"settings":
+			{
+				"buffer_size": 13033,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/C/Users/kurte/Documents/Arduino/TurtleBot/up_turtlebot_waffle_ir_cliff/turtlebot_external_sensors.h",
+			"settings":
+			{
+				"buffer_size": 2604,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/C/Users/kurte/Documents/Arduino/TurtleBot/up_turtlebot_waffle_ir_cliff/turtlebot_external_sensors.cpp",
+			"settings":
+			{
+				"buffer_size": 6063,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/D/GitHub/turtlebot3_msgs/msg/SensorState.msg",
+			"settings":
+			{
+				"buffer_size": 1132,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/D/GitHub/turtlebot3_msgs/msg/CliffEvent.msg",
+			"settings":
+			{
+				"buffer_size": 786,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/D/GitHub/turtlebot3_msgs/msg/BumperEvent.msg",
+			"settings":
+			{
+				"buffer_size": 573,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/D/GitHub/turtlebot3_msgs/CMakeLists.txt",
+			"settings":
+			{
+				"buffer_size": 1842,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/D/GitHub/OpenCR/arduino/opencr_arduino/opencr/libraries/turtlebot3/include/turtlebot3/turtlebot3_sensor.h",
+			"settings":
+			{
+				"buffer_size": 3136,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "turtlebot3_sensor.cpp",
+			"settings":
+			{
+				"buffer_size": 12520,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/D/GitHub/OpenCR/arduino/opencr_arduino/opencr/libraries/turtlebot3_ros_lib/turtlebot3_msgs/CliffEvent.h",
+			"settings":
+			{
+				"buffer_size": 1825,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/D/GitHub/OpenCR/arduino/opencr_arduino/opencr/libraries/turtlebot3_ros_lib/turtlebot3_msgs/BumperEvent.h",
+			"settings":
+			{
+				"buffer_size": 1373,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/D/GitHub/OpenCR/arduino/opencr_arduino/opencr/libraries/OLLO/OLLO.cpp",
+			"settings":
+			{
+				"buffer_size": 16121,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/D/GitHub/OpenCR/arduino/opencr_arduino/opencr/libraries/turtlebot3_ros_lib/turtlebot3_msgs/SensorState.h",
+			"settings":
+			{
+				"buffer_size": 8874,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/D/GitHub/turtlebot3/turtlebot3_safety_controller/include/turtlebot3_safety_controller/safety_controller.hpp",
+			"settings":
+			{
+				"buffer_size": 12723,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/D/GitHub/turtlebot3/turtlebot3_safety_controller/src/nodelet.cpp",
+			"settings":
+			{
+				"buffer_size": 3654,
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"last_filter": "Package Control: ",
+		"selected_items":
+		[
+			[
+				"Package Control: ",
+				"Package Control: Disable Package"
+			],
+			[
+				"packa",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 452.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/C/Users/kurte/Documents/Arduino/TurtleBot/up_turtlebot_waffle_ir_cliff",
+		"/D/GitHub/OpenCR/arduino/opencr_arduino/opencr",
+		"/D/GitHub/OpenCR/arduino/opencr_arduino/opencr/libraries",
+		"/D/GitHub/OpenCR/arduino/opencr_arduino/opencr/libraries/turtlebot3",
+		"/D/GitHub/OpenCR/arduino/opencr_arduino/opencr/libraries/turtlebot3_ros_lib",
+		"/D/GitHub/OpenCR/arduino/opencr_arduino/opencr/libraries/turtlebot3_ros_lib/ros",
+		"/D/GitHub/OpenCR/arduino/opencr_arduino/opencr/libraries/turtlebot3_ros_lib/rosserial_arduino",
+		"/D/GitHub/OpenCR/arduino/opencr_arduino/opencr/libraries/turtlebot3_ros_lib/rosserial_msgs",
+		"/D/GitHub/OpenCR/arduino/opencr_arduino/opencr/libraries/turtlebot3_ros_lib/turtlebot3_msgs",
+		"/D/GitHub/OpenCR/arduino/opencr_arduino/opencr/variants",
+		"/D/GitHub/OpenCR/arduino/opencr_arduino/opencr/variants/OpenCR",
+		"/D/GitHub/turtlebot3",
+		"/D/GitHub/turtlebot3/turtlebot3",
+		"/D/GitHub/turtlebot3/turtlebot3_example",
+		"/D/GitHub/turtlebot3/turtlebot3_example/action",
+		"/D/GitHub/turtlebot3/turtlebot3_example/launch",
+		"/D/GitHub/turtlebot3/turtlebot3_example/nodes",
+		"/D/GitHub/turtlebot3/turtlebot3_navigation",
+		"/D/GitHub/turtlebot3/turtlebot3_safety_controller",
+		"/D/GitHub/turtlebot3/turtlebot3_safety_controller/include",
+		"/D/GitHub/turtlebot3/turtlebot3_safety_controller/include/turtlebot3_safety_controller",
+		"/D/GitHub/turtlebot3/turtlebot3_safety_controller/launch",
+		"/D/GitHub/turtlebot3/turtlebot3_safety_controller/plugins",
+		"/D/GitHub/turtlebot3/turtlebot3_safety_controller/src",
+		"/D/GitHub/turtlebot3_msgs",
+		"/D/GitHub/turtlebot3_msgs/msg"
+	],
+	"file_history":
+	[
+		"/D/GitHub/OpenCR/arduino/opencr_arduino/opencr/variants/OpenCR/variant.cpp",
+		"/C/Users/kurte/AppData/Local/Temp/scp43805/home/kurt/catkin_ws/src/turtlebot3_safety/package.xml",
+		"/C/Users/kurte/Downloads/stm32f745ie.rtf",
+		"/C/Users/kurte/Downloads/stm32f745ie.txt",
+		"/C/Users/kurte/AppData/Local/Temp/scp25605/home/kurt/catkin_ws/.catkin_workspace",
+		"/C/Users/kurte/AppData/Local/Temp/scp45619/home/kurt/catkin_ws/build/catkin_generated/metapackages/turtlebot3_safety/CMakeLists.txt",
+		"/C/Users/kurte/AppData/Local/Temp/scp26192/home/kurt/catkin_ws/src/turtlebot3_safety/package.xml",
+		"/C/ProgramData/Git/config",
+		"/D/GitHub/OpenCM9.04-and-OpenCR-Support-Boards/.gitignore",
+		"/D/GitHub/OpenCM9.04-and-OpenCR-Support-Boards/README.md",
+		"/C/Users/kurte/AppData/Local/Temp/scp02187/home/kurt/sketchbook/libraries/ros_lib/turtlebot3_msgs/CliffEvent.h",
+		"/D/GitHub/OpenCR/arduino/opencr_arduino/opencr/libraries/turtlebot3_ros_lib/ros.h",
+		"/D/GitHub/OpenCR/arduino/opencr_arduino/opencr/libraries/turtlebot3_ros_lib/turtlebot3_msgs/Sound.h",
+		"/D/GitHub/turtlebot3_msgs/CMakeLists.txt",
+		"/C/Users/kurte/AppData/Local/Temp/scp16908/home/kurt/catkin_ws/devel/include/turtlebot3_msgs/CliffEvent.h",
+		"/D/GitHub/OpenCR/arduino/opencr_arduino/opencr/libraries/turtlebot3_ros_lib/ros/publisher.h",
+		"/D/GitHub/OpenCR/arduino/opencr_arduino/opencr/libraries/OLLO/OLLO.h",
+		"/D/GitHub/OpenCR/arduino/opencr_arduino/opencr/libraries/OLLO/OLLO.cpp",
+		"/D/GitHub/OpenCR/arduino/opencr_arduino/opencr/libraries/turtlebot3_ros_lib/ros/node_handle.h",
+		"/D/GitHub/OpenCR/arduino/opencr_arduino/opencr/libraries/turtlebot3/src/turtlebot3/turtlebot3_sensor.cpp",
+		"/C/Users/kurte/AppData/Local/Temp/scp58369/home/kurt/opencr_update/remote_update.sh",
+		"/C/Users/kurte/AppData/Local/Temp/scp20858/home/kurt/opencr_update/remote_update.sh",
+		"/C/Users/kurte/AppData/Local/Temp/scp19954/home/kurt/opencr_update/update.sh",
+		"/C/Users/kurte/AppData/Local/Temp/scp09377/home/kurt/opencr_update/remote_update.sh",
+		"/C/Users/kurte/AppData/Local/Temp/scp08264/home/kurt/opencr_update/update.sh",
+		"/C/Users/kurte/Documents/Arduino/libraries/SPIN/SPIN.cpp",
+		"/C/Users/kurte/Documents/Arduino/libraries/SPIN/SPIN.h",
+		"/C/Users/kurte/Documents/Arduino/libraries/ili9341_t3n/README.md",
+		"/C/Users/kurte/Documents/Arduino/libraries/DynamixelShield/src/util/dxl_def.h",
+		"/C/Users/kurte/Documents/Arduino/libraries/DynamixelShield/src/util/dxl.h",
+		"/C/Users/kurte/Documents/Arduino/libraries/DynamixelShield/src/util/dxl.cpp",
+		"/C/Users/kurte/Documents/Arduino/libraries/DynamixelShield/src/DynamixelShield.cpp",
+		"/C/Users/kurte/Documents/Arduino/libraries/DynamixelShield/src/DynamixelShield.h",
+		"/C/Users/kurte/Documents/Arduino/libraries/ILI9341_t3DMA/ILI9341_t3DMA.h",
+		"/C/Users/kurte/Documents/Arduino/libraries/ILI9341_t3DMA/ILI9341_t3DMA.cpp",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/cores/arduino/wiring_digital.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/variants/OpenCR/variant.cpp",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/tools/opencr_gcc/5.4.0-2016q2/arm-none-eabi/include/c++/5.4.1/arm-none-eabi/armv8-m.main/bits/gthr-single.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/tools/opencr_gcc/5.4.0-2016q2/arm-none-eabi/include/c++/5.4.1/arm-none-eabi/armv8-m.main/fpu/fpv5-d16/bits/gthr-default.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/tools/opencr_gcc/5.4.0-2016q2/arm-none-eabi/include/c++/5.4.1/arm-none-eabi/armv8-m.main/fpu/fpv5-d16/bits/gthr-posix.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/tools/opencr_gcc/5.4.0-2016q2/arm-none-eabi/include/c++/5.4.1/arm-none-eabi/armv8-m.main/fpu/fpv5-d16/bits/gthr-single.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/tools/opencr_gcc/5.4.0-2016q2/arm-none-eabi/include/c++/5.4.1/arm-none-eabi/armv8-m.main/fpu/fpv5-sp-d16/bits/gthr-default.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/tools/opencr_gcc/5.4.0-2016q2/arm-none-eabi/include/c++/5.4.1/arm-none-eabi/armv8-m.main/fpu/fpv5-sp-d16/bits/gthr-posix.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/tools/opencr_gcc/5.4.0-2016q2/arm-none-eabi/include/c++/5.4.1/arm-none-eabi/armv8-m.main/fpu/fpv5-sp-d16/bits/gthr-single.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/tools/opencr_gcc/5.4.0-2016q2/arm-none-eabi/include/c++/5.4.1/arm-none-eabi/armv8-m.main/softfp/fpv5-d16/bits/gthr-default.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/tools/opencr_gcc/5.4.0-2016q2/arm-none-eabi/include/c++/5.4.1/arm-none-eabi/armv8-m.main/softfp/fpv5-d16/bits/gthr-posix.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/tools/opencr_gcc/5.4.0-2016q2/arm-none-eabi/include/c++/5.4.1/arm-none-eabi/armv8-m.main/softfp/fpv5-d16/bits/gthr-single.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/tools/opencr_gcc/5.4.0-2016q2/arm-none-eabi/include/c++/5.4.1/arm-none-eabi/armv8-m.main/softfp/fpv5-sp-d16/bits/gthr-default.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/tools/opencr_gcc/5.4.0-2016q2/arm-none-eabi/include/c++/5.4.1/arm-none-eabi/armv8-m.main/softfp/fpv5-sp-d16/bits/gthr-posix.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/tools/opencr_gcc/5.4.0-2016q2/arm-none-eabi/include/c++/5.4.1/arm-none-eabi/armv8-m.main/softfp/fpv5-sp-d16/bits/gthr-single.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/tools/opencr_gcc/5.4.0-2016q2/arm-none-eabi/include/c++/5.4.1/arm-none-eabi/bits/gthr-default.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/tools/opencr_gcc/5.4.0-2016q2/arm-none-eabi/include/c++/5.4.1/arm-none-eabi/bits/gthr-posix.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/tools/opencr_gcc/5.4.0-2016q2/arm-none-eabi/include/c++/5.4.1/arm-none-eabi/bits/gthr-single.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/tools/opencr_gcc/5.4.0-2016q2/arm-none-eabi/include/c++/5.4.1/arm-none-eabi/fpu/bits/gthr-default.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/tools/opencr_gcc/5.4.0-2016q2/arm-none-eabi/include/c++/5.4.1/arm-none-eabi/fpu/bits/gthr-posix.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/tools/opencr_gcc/5.4.0-2016q2/arm-none-eabi/include/c++/5.4.1/arm-none-eabi/fpu/bits/gthr-single.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/tools/opencr_gcc/5.4.0-2016q2/arm-none-eabi/include/c++/5.4.1/arm-none-eabi/thumb/bits/gthr-default.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/tools/opencr_gcc/5.4.0-2016q2/arm-none-eabi/include/c++/5.4.1/arm-none-eabi/thumb/bits/gthr-posix.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/tools/opencr_gcc/5.4.0-2016q2/arm-none-eabi/include/c++/5.4.1/arm-none-eabi/thumb/bits/gthr-single.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/tools/opencr_gcc/5.4.0-2016q2/arm-none-eabi/include/c++/5.4.1/parallel/compatibility.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/tools/opencr_gcc/5.4.0-2016q2/arm-none-eabi/include/sched.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/cores/arduino/Arduino.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/cores/arduino/wiring_pulse.c",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/libraries/Eigen331/src/Eigen/src/Core/Transpositions.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/libraries/Eigen331/src/Eigen/src/Core/products/GeneralBlockPanelKernel.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/libraries/Eigen331/src/Eigen/src/Geometry/Quaternion.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/libraries/Eigen331/src/Eigen/src/Jacobi/Jacobi.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/libraries/Eigen331/src/Eigen/src/SparseCore/SparseBlock.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/libraries/Eigen331/src/Eigen/src/SparseCore/SparseMatrix.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/libraries/IMU/MadgwickAHRS.cpp",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/libraries/RTOS/src/cmsis_os.c",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/libraries/RTOS/src/cmsis_os.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/libraries/RTOS/src/croutine.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/libraries/RTOS/src/event_groups.c",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/cores/arduino/UARTClass.cpp",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/cores/arduino/USBSerial.cpp",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/variants/OpenCR/hw/driver/vcp.c",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/libraries/SPI/SPI.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/libraries/SPI/SPI.cpp",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/variants/OpenCR/lib/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_spi.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/variants/OpenCR/lib/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi.c",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/variants/OpenCR/main.cpp",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/variants/OpenCR/variant.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/cores/arduino/WInterrupts.c",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/libraries/turtlebot3/examples/turtlebot3_waffle/turtlebot3_core/turtlebot3_core_config.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/libraries/turtlebot3/examples/turtlebot3_with_open_manipulator/turtlebot3_with_open_manipulator_core/turtlebot3_with_open_manipulator_core.ino",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/libraries/turtlebot3/examples/turtlebot3_waffle/turtlebot3_core/turtlebot3_core.ino",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/libraries/turtlebot3/examples/turtlebot3_burger/turtlebot3_core/turtlebot3_core.ino",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/libraries/turtlebot3_ros_lib/geometry_msgs/Point32.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/libraries/turtlebot3_ros_lib/sensor_msgs/Joy.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/libraries/turtlebot3_ros_lib/std_msgs/UInt8.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/libraries/turtlebot3_ros_lib/ros/node_handle.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/libraries/turtlebot3_ros_lib/ArduinoHardware.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/libraries/DynamixelSDK/include/dynamixel_sdk/port_handler_arduino.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/libraries/turtlebot3/src/turtlebot3/turtlebot3_diagnosis.cpp",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/libraries/HX8347D/LCD.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/libraries/HX8347D/LCD.cpp",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/libraries/turtlebot3/include/turtlebot3/turtlebot3_diagnosis.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/libraries/IMU/imu_spi.cpp",
+		"/C/Users/kurte/Documents/Arduino/libraries/RA8875/fonts/Liberation_Mono_28.c",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/variants/OpenCR/hw/usb_cdc/usbd_cdc_interface.c",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/variants/OpenCR/hw/driver/drv_spi.c",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/libraries/Wire/SlowSoftI2CMaster.cpp",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/variants/OpenCR/lib/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_gpio.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/variants/OpenCR/hw/driver/drv_dxl.c",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/cores/arduino/wiring_constants.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/variants/OpenCR/lib/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_gpio.c",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/cores/arduino/wiring_digital.c",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/variants/OpenCR/bsp/opencr/include/core_cm0.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/variants/OpenCR/bsp/opencr/stm32f746xx.h",
+		"/C/Users/kurte/Documents/Arduino/libraries/digitalWriteFast/digitalWriteFast.h",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/cores/arduino/digitalWriteFast.h",
+		"/C/Users/kurte/AppData/Local/Temp/arduino_build_401823/foo",
+		"/C/Users/kurte/AppData/Local/Temp/scp42935/home/kurt/catkin_ws/src/turtlebot3_msgs/msg/SensorState.msg",
+		"/C/Users/kurte/AppData/Local/Temp/scp42609/home/kurt/catkin_ws/src/turtlebot3_msgs/msg/VersionInfo.msg",
+		"/C/Users/kurte/AppData/Local/Temp/scp41185/home/kurt/catkin_ws/src/turtlebot3_msgs/README.md",
+		"/C/Users/kurte/AppData/Local/Temp/scp49333/home/kurt/catkin_ws/src/turtlebot3/turtlebot3_bringup/launch/includes/description.launch.xml",
+		"/C/Users/kurte/AppData/Local/Temp/scp49491/home/kurt/catkin_ws/src/turtlebot3/turtlebot3_bringup/launch/turtlebot3_robot.launch",
+		"/C/Users/kurte/AppData/Local/Temp/scp49529/home/kurt/catkin_ws/src/turtlebot3/turtlebot3_bringup/launch/turtlebot3_core.launch",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/platform.txt",
+		"/D/arduino-1.8.5/hardware/arduino/avr/platform.txt",
+		"/C/Users/kurte/AppData/Local/Temp/scp13055/home/kurt/opencr_update/update.sh",
+		"/C/Users/kurte/AppData/Local/Temp/scp16897/home/kurt/opencr_update/opencr_update/waffle.opencr",
+		"/C/Users/kurte/AppData/Local/Temp/scp14918/home/kurt/opencr_update/opencr_update/opencr_ld_shell_x86",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/variants/OpenCR/hw/driver/drv_exti.c",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/variants/OpenCR/hw/driver/delay.c",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/cores/arduino/Tone.cpp",
+		"/C/Users/kurte/AppData/Local/Arduino15/packages/OpenCR/hardware/OpenCR/1.1.2/libraries/Wire/Wire.h"
+	],
+	"find":
+	{
+		"height": 45.0
+	},
+	"find_in_files":
+	{
+		"height": 131.0,
+		"where_history":
+		[
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": true,
+		"find_history":
+		[
+			"float64",
+			"subscribe",
+			"cliffEventCB",
+			"Turlebot3Safety",
+			"nh.",
+			"cliffeventcb",
+			"velocity_command_publisher",
+			"bulk_write",
+			"bulk",
+			",.*//",
+			"GPIO([A-Z]), GPIO_PIN_",
+			"}",
+			"{",
+			"pa0",
+			"alternate function",
+			"table",
+			"table 10",
+			"USART6",
+			"UART6",
+			"DRV_UART_NUM_",
+			"Serial1",
+			"UART6",
+			"nodelet",
+			"kobuki_",
+			"cliff_event_msg_",
+			"publishsensorstatemsg",
+			"Sound.msg",
+			"turtlebot3cliffsensor",
+			"current_val",
+			"to run",
+			"claims to run",
+			"library DynamixelWorkbench claims",
+			"WARNING: library DynamixelWorkbench claims",
+			".update",
+			".init()",
+			"_RIGHT_",
+			"_RIGHT",
+			"init",
+			"ollo",
+			"initir",
+			"sensorstate",
+			"sensor_state_msg",
+			"sensorstatemessage",
+			"sensorstatemsg",
+			"ollo_sleep",
+			"getNumSubscribers",
+			"publish",
+			"touch_sensor",
+			"sensor_msg",
+			"sensors",
+			"publish"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": true,
+		"replace_history":
+		[
+			"double",
+			"Turtlebot3Safety",
+			"nh_.",
+			",",
+			"$1",
+			"",
+			"turtlebot3_",
+			".update(sensor_state_msg)",
+			"_REAR_",
+			"_LEFT_",
+			"_FRONT_",
+			"FRONT",
+			"_REAR",
+			"_LEFT",
+			"_FRONT"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": true,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 20,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "/C/Users/kurte/AppData/Local/Temp/scp55347/home/kurt/catkin_ws/src/turtlebot3_safety/src/turtlebot3_safety.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 5657,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3514,
+								3514
+							]
+						],
+						"settings":
+						{
+							"markdonw_live_preview_last_run": 1528037727.59,
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1046.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 10,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "/C/Users/kurte/AppData/Local/Temp/scp44314/home/kurt/catkin_ws/src/turtlebot3_safety/include/turtlebot3_safety.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2253,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2202,
+								2202
+							]
+						],
+						"settings":
+						{
+							"markdonw_live_preview_last_run": 1528051469.54,
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 432.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 11,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "/C/Users/kurte/Documents/Arduino/TurtleBot/up_turtlebot_waffle_ir_cliff/up_turtlebot_waffle_ir_cliff.ino",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 23908,
+						"regions":
+						{
+							"bookmarks":
+							{
+								"flags": 144,
+								"icon": "bookmark",
+								"regions":
+								[
+									[
+										7844,
+										7844
+									]
+								],
+								"scope": "bookmarks"
+							}
+						},
+						"selection":
+						[
+							[
+								1334,
+								1340
+							]
+						],
+						"settings":
+						{
+							"markdonw_live_preview_last_run": 1527597965.55,
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 12,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "/C/Users/kurte/Documents/Arduino/TurtleBot/up_turtlebot_waffle_ir_cliff/turtlebot3_core_config.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 10030,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2822,
+								2822
+							]
+						],
+						"settings":
+						{
+							"markdonw_live_preview_last_run": 1527597965.54,
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 1152.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 13,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "/D/GitHub/turtlebot3/turtlebot3_safety_controller/launch/standalone.launch",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 860,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								336,
+								343
+							]
+						],
+						"settings":
+						{
+							"markdonw_live_preview_last_run": 1527724855.92,
+							"syntax": "Packages/Text/Plain text.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 19,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "/D/GitHub/turtlebot3/turtlebot3_safety_controller/plugins/nodelet_plugins.xml",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 229,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								229,
+								229
+							]
+						],
+						"settings":
+						{
+							"markdonw_live_preview_last_run": 1527724936.78,
+							"syntax": "Packages/XML/XML.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 18,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "/D/GitHub/OpenCR/arduino/opencr_arduino/opencr/variants/OpenCR/hw/driver/drv_uart.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 958,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								211,
+								211
+							]
+						],
+						"settings":
+						{
+							"markdonw_live_preview_last_run": 1527808306.85,
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 14,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "/D/GitHub/OpenCR/arduino/opencr_arduino/opencr/variants/OpenCR/hw/driver/drv_uart.c",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 13033,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								6655,
+								6655
+							]
+						],
+						"settings":
+						{
+							"markdonw_live_preview_last_run": 1527808337.58,
+							"syntax": "Packages/C++/C.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 6099.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 17,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "/C/Users/kurte/Documents/Arduino/TurtleBot/up_turtlebot_waffle_ir_cliff/turtlebot_external_sensors.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2604,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1362,
+								1363
+							]
+						],
+						"settings":
+						{
+							"markdonw_live_preview_last_run": 1527597965.54,
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 888.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 21,
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "/C/Users/kurte/Documents/Arduino/TurtleBot/up_turtlebot_waffle_ir_cliff/turtlebot_external_sensors.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6063,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2592,
+								2592
+							]
+						],
+						"settings":
+						{
+							"auto_name": "",
+							"markdonw_live_preview_last_run": 1527597965.54,
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1115.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 15,
+					"type": "text"
+				},
+				{
+					"buffer": 10,
+					"file": "/D/GitHub/turtlebot3_msgs/msg/SensorState.msg",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1132,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								637,
+								637
+							]
+						],
+						"settings":
+						{
+							"markdonw_live_preview_last_run": 1527598110.96,
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 11,
+					"file": "/D/GitHub/turtlebot3_msgs/msg/CliffEvent.msg",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 786,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								556
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 9,
+					"type": "text"
+				},
+				{
+					"buffer": 12,
+					"file": "/D/GitHub/turtlebot3_msgs/msg/BumperEvent.msg",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 573,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								500,
+								500
+							]
+						],
+						"settings":
+						{
+							"auto_name": "",
+							"markdonw_live_preview_last_run": 1528073613.58,
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 13,
+					"file": "/D/GitHub/turtlebot3_msgs/CMakeLists.txt",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1842,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								814,
+								814
+							]
+						],
+						"settings":
+						{
+							"markdonw_live_preview_last_run": 1528065304.08,
+							"syntax": "Packages/Text/Plain text.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 144.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 14,
+					"file": "/D/GitHub/OpenCR/arduino/opencr_arduino/opencr/libraries/turtlebot3/include/turtlebot3/turtlebot3_sensor.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3136,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3013,
+								3017
+							]
+						],
+						"settings":
+						{
+							"markdonw_live_preview_last_run": 1527597965.55,
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1652.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 15,
+					"file": "turtlebot3_sensor.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 12520,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								9042,
+								9047
+							]
+						],
+						"settings":
+						{
+							"markdonw_live_preview_last_run": 1527597965.55,
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 20,
+					"type": "text"
+				},
+				{
+					"buffer": 16,
+					"file": "/D/GitHub/OpenCR/arduino/opencr_arduino/opencr/libraries/turtlebot3_ros_lib/turtlebot3_msgs/CliffEvent.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1825,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								328,
+								328
+							]
+						],
+						"settings":
+						{
+							"markdonw_live_preview_last_run": 1527641710.79,
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 17,
+					"file": "/D/GitHub/OpenCR/arduino/opencr_arduino/opencr/libraries/turtlebot3_ros_lib/turtlebot3_msgs/BumperEvent.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1373,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								388,
+								388
+							]
+						],
+						"settings":
+						{
+							"markdonw_live_preview_last_run": 1528066316.34,
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 8,
+					"type": "text"
+				},
+				{
+					"buffer": 18,
+					"file": "/D/GitHub/OpenCR/arduino/opencr_arduino/opencr/libraries/OLLO/OLLO.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 16121,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2414,
+								2414
+							]
+						],
+						"settings":
+						{
+							"markdonw_live_preview_last_run": 1527685710.49,
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1820.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 19,
+					"file": "/D/GitHub/OpenCR/arduino/opencr_arduino/opencr/libraries/turtlebot3_ros_lib/turtlebot3_msgs/SensorState.h",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 8874,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								781,
+								781
+							]
+						],
+						"settings":
+						{
+							"markdonw_live_preview_last_run": 1528068687.14,
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 26.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 20,
+					"file": "/D/GitHub/turtlebot3/turtlebot3_safety_controller/include/turtlebot3_safety_controller/safety_controller.hpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 12723,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								5987,
+								5987
+							]
+						],
+						"settings":
+						{
+							"markdonw_live_preview_last_run": 1527773587.43,
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1205.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 21,
+					"file": "/D/GitHub/turtlebot3/turtlebot3_safety_controller/src/nodelet.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3654,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"markdonw_live_preview_last_run": 1527790499.94,
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 936.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 16,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 33.0
+	},
+	"input":
+	{
+		"height": 45.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.stino_build_panel":
+	{
+		"height": 0.0
+	},
+	"output.stino_panel":
+	{
+		"height": 0.0
+	},
+	"output.summary-panel":
+	{
+		"height": 124.0
+	},
+	"pinned_build_system": "",
+	"project": "up_turtlebot_waffle_ir_cliff.sublime-project",
+	"replace":
+	{
+		"height": 82.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"o",
+				"opencr\\libraries\\OLLO\\OLLO.cpp"
+			],
+			[
+				"sound.h",
+				"opencr\\libraries\\turtlebot3_ros_lib\\turtlebot3_msgs\\Sound.h"
+			],
+			[
+				"sensorstatemsg",
+				"turtlebot3_msgs\\msg\\SensorState.msg"
+			],
+			[
+				"ollo",
+				"opencr\\libraries\\OLLO\\OLLO.h"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 392.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 592.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 343.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

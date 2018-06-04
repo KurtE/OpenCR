@@ -21,6 +21,8 @@
 
 #include <IMU.h>
 
+#define EXTERNAL_SENSOR_CODE
+
 #include <sensor_msgs/Imu.h>
 #include <sensor_msgs/BatteryState.h>
 #include <sensor_msgs/MagneticField.h>
@@ -77,6 +79,9 @@ class Turtlebot3Sensor
   void melody(uint16_t* note, uint8_t note_num, uint8_t* durations);
   void makeSound(uint8_t index);  
 
+// I want to experiment with defining one or more cliff sensors and like wise
+// one or more bumpers...
+#ifdef EXTERNAL_SENSOR_CODE
   // Bumper
   void initBumper(void);
   uint8_t checkPushBumper(void);
@@ -89,7 +94,7 @@ class Turtlebot3Sensor
   void initSonar(void);
   void updateSonar(uint32_t t);
   float getSonarData(void);
-
+#endif
   // Illumination sensor
   float getIlluminationData(void);
 

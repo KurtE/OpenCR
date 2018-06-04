@@ -7,7 +7,7 @@ menu.upload_method=Upload method
 OpenCR.bootloader.tool = dfu_util
 OpenCR.bootloader.file = opencr_boot.bin
 
-OpenCR.name=OpenCR Board
+OpenCR.name=OpenCR Board(develop)
 OpenCR.upload.maximum_size=786432
 
 OpenCR.upload.file_type=bin
@@ -41,3 +41,8 @@ OpenCR.build.inc7=
 OpenCR.menu.upload_method.UploadMethod=OpenCR Bootloader
 OpenCR.menu.upload_method.UploadMethod.upload.protocol=opencr_ld
 OpenCR.menu.upload_method.UploadMethod.upload.tool=opencr_ld
+
+OpenCR.menu.upload_method.pscp=Remote Upload
+OpenCR.menu.upload_method.pscp.upload.protocol=pscp
+OpenCR.menu.upload_method.pscp.upload.tool=pscp
+
