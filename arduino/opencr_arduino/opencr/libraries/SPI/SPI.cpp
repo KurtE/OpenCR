@@ -24,7 +24,7 @@
 /* Create an SPIClass instance */
 SPIClass SPI    (SPI2);
 SPIClass SPI_IMU(SPI1);
-
+SPIClass SPI_EXT(SPI4);
 
 
 SPIClass::SPIClass(SPI_TypeDef *spiPort) {
@@ -32,8 +32,10 @@ SPIClass::SPIClass(SPI_TypeDef *spiPort) {
 
   if(spiPort == SPI1)
     _hspi = &hspi1;
-  if(spiPort == SPI2)
+  else if(spiPort == SPI2)
     _hspi = &hspi2;
+  else if(spiPort == SPI4)
+    _hspi = &hspi4;
 }
 
 /**
@@ -50,6 +52,10 @@ SPIClass::SPIClass(uint8_t spiPort){
     case 2:
       _spiPort = SPI2;
       _hspi = &hspi2;
+    break;
+    case 4:
+      _spiPort = SPI4;
+      _hspi = &hspi4;
     break;
   }
 }
@@ -89,6 +95,17 @@ uint8_t SPIClass::transfer(uint8_t data) const{
   uint8_t ret;
   HAL_SPI_TransmitReceive(_hspi, &data, &ret, 1, 0xffff);
 	return ret;
+}
+
+void SPIClass::transfer(void *buf, size_t count) {
+  uint8_t *pb = (uint8_t*)buf;
+  while (count) 
+  {
+    // This version overwrites the buffer (ARG)
+    *pb = transfer(*pb); 
+    pb++;
+    count--;
+  }
 }
 
 uint16_t SPIClass::transfer16(uint16_t data) {

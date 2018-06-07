@@ -9,7 +9,7 @@
 #include "variant.h"
 
 
-#define SPI_MAX_CH              2
+#define SPI_MAX_CH              3
 #define SPI_TX_DMA_MAX_LENGTH   0xEFFF
 
 
@@ -27,12 +27,21 @@ typedef struct
 
 SPI_HandleTypeDef hspi1;
 SPI_HandleTypeDef hspi2;
+SPI_HandleTypeDef hspi4;
 
 static DMA_HandleTypeDef hdma2_tx;
+static DMA_HandleTypeDef hdma4_tx;
 
 volatile spi_dma_t spi_dma[SPI_MAX_CH];
 
 
+inline volatile spi_dma_t *drv_map_haspi_to_spi_dma(SPI_HandleTypeDef* hspi) 
+{
+  if (hspi->Instance == SPI1) return &spi_dma[0];
+  if (hspi->Instance == SPI2) return &spi_dma[1];
+  if (hspi->Instance == SPI4) return &spi_dma[2];
+  return NULL;
+}
 
 
 
@@ -70,6 +79,20 @@ int drv_spi_init()
   hspi2.Init.CRCPolynomial      = 10;
   //HAL_SPI_Init(&hspi2);
 
+  hspi4.Instance                = SPI4;
+  hspi4.Init.Mode               = SPI_MODE_MASTER;
+  hspi4.Init.Direction          = SPI_DIRECTION_2LINES;
+  hspi4.Init.DataSize           = SPI_DATASIZE_8BIT;
+  hspi4.Init.CLKPolarity        = SPI_POLARITY_LOW;
+  hspi4.Init.CLKPhase           = SPI_PHASE_1EDGE;
+  hspi4.Init.NSS                = SPI_NSS_SOFT;
+  hspi4.Init.BaudRatePrescaler  = SPI_BAUDRATEPRESCALER_16;
+  hspi4.Init.FirstBit           = SPI_FIRSTBIT_MSB;
+  hspi4.Init.TIMode             = SPI_TIMODE_DISABLE;
+  hspi4.Init.CRCCalculation     = SPI_CRCCALCULATION_DISABLE;
+  hspi4.Init.CRCPolynomial      = 10;
+  //HAL_SPI_Init(&hspi4);
+
 
   for(i=0; i<SPI_MAX_CH; i++)
   {
@@ -90,29 +113,22 @@ void drv_spi_enable_dma(SPI_HandleTypeDef* hspi)
   if(hspi->Instance==SPI1)
   {
   }
-  if(hspi->Instance==SPI2)
+  else if(hspi->Instance==SPI2)
   {
     spi_dma[1].use = true;
+  }
+  else if(hspi->Instance==SPI4)
+  {
+    spi_dma[2].use = true;
   }
 }
 
 
 uint8_t drv_spi_is_dma_tx_done(SPI_HandleTypeDef* hspi)
 {
-  if(hspi->Instance==SPI1)
-  {
-    if(spi_dma[0].use != true) return true;
-
-    return spi_dma[0].tx_done;
-  }
-  if(hspi->Instance==SPI2)
-  {
-    if(spi_dma[1].use != true) return true;
-
-    return spi_dma[1].tx_done;
-  }
-
-  return true;
+  volatile spi_dma_t *pspi_dma = drv_map_haspi_to_spi_dma(hspi);
+  if (!pspi_dma || (pspi_dma->use != true)) return true;  
+  return pspi_dma->tx_done;
 }
 
 
@@ -121,27 +137,29 @@ void drv_spi_start_dma_tx(SPI_HandleTypeDef* hspi, uint8_t *p_buf, uint32_t leng
   if(hspi->Instance==SPI1)
   {
   }
-  if(hspi->Instance==SPI2)
+  else 
   {
-    if(spi_dma[1].use != true) return;
+   volatile spi_dma_t *pspi_dma = drv_map_haspi_to_spi_dma(hspi);
+
+    if ((pspi_dma == NULL) || (pspi_dma->use != true)) return ;
 
     if(length > SPI_TX_DMA_MAX_LENGTH)
     {
-      spi_dma[1].tx_done       = false;
-      spi_dma[1].tx_length_next= length - SPI_TX_DMA_MAX_LENGTH;
-      spi_dma[1].p_tx_buf      =  p_buf;
-      spi_dma[1].p_tx_buf_next = &p_buf[SPI_TX_DMA_MAX_LENGTH];
+      pspi_dma->tx_done       = false;
+      pspi_dma->tx_length_next= length - SPI_TX_DMA_MAX_LENGTH;
+      pspi_dma->p_tx_buf      =  p_buf;
+      pspi_dma->p_tx_buf_next = &p_buf[SPI_TX_DMA_MAX_LENGTH];
 
-      HAL_SPI_Transmit_DMA(hspi, spi_dma[1].p_tx_buf, SPI_TX_DMA_MAX_LENGTH);
+      HAL_SPI_Transmit_DMA(hspi, pspi_dma->p_tx_buf, SPI_TX_DMA_MAX_LENGTH);
     }
     else
     {
-      spi_dma[1].tx_done       = false;
-      spi_dma[1].tx_length_next= 0;
-      spi_dma[1].p_tx_buf      = p_buf;
-      spi_dma[1].p_tx_buf_next = NULL;
+      pspi_dma->tx_done       = false;
+      pspi_dma->tx_length_next= 0;
+      pspi_dma->p_tx_buf      = p_buf;
+      pspi_dma->p_tx_buf_next = NULL;
 
-      HAL_SPI_Transmit_DMA(hspi, spi_dma[1].p_tx_buf, length);
+      HAL_SPI_Transmit_DMA(hspi, pspi_dma->p_tx_buf, length);
     }
   }
 }
@@ -150,30 +168,30 @@ void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi)
 {
   volatile uint16_t length;
 
-
-  if(hspi->Instance==SPI2)
+  volatile spi_dma_t *pspi_dma = drv_map_haspi_to_spi_dma(hspi);
+  if (pspi_dma && (hspi->Instance != SPI1))
   {
-    if(spi_dma[1].tx_length_next > 0)
+    if(pspi_dma->tx_length_next > 0)
     {
-      spi_dma[1].p_tx_buf = spi_dma[1].p_tx_buf_next;
+      pspi_dma->p_tx_buf = pspi_dma->p_tx_buf_next;
 
-      if(spi_dma[1].tx_length_next > SPI_TX_DMA_MAX_LENGTH)
+      if(pspi_dma->tx_length_next > SPI_TX_DMA_MAX_LENGTH)
       {
         length = SPI_TX_DMA_MAX_LENGTH;
-        spi_dma[1].tx_length_next = spi_dma[1].tx_length_next - SPI_TX_DMA_MAX_LENGTH;
-        spi_dma[1].p_tx_buf_next = &spi_dma[1].p_tx_buf[SPI_TX_DMA_MAX_LENGTH];
+        pspi_dma->tx_length_next = pspi_dma->tx_length_next - SPI_TX_DMA_MAX_LENGTH;
+        pspi_dma->p_tx_buf_next = &pspi_dma->p_tx_buf[SPI_TX_DMA_MAX_LENGTH];
       }
       else
       {
-        length = spi_dma[1].tx_length_next;
-        spi_dma[1].tx_length_next = 0;
-        spi_dma[1].p_tx_buf_next = NULL;
+        length = pspi_dma->tx_length_next;
+        pspi_dma->tx_length_next = 0;
+        pspi_dma->p_tx_buf_next = NULL;
       }
-      HAL_SPI_Transmit_DMA(hspi, spi_dma[1].p_tx_buf, length);
+      HAL_SPI_Transmit_DMA(hspi, pspi_dma->p_tx_buf, length);
     }
     else
     {
-      spi_dma[1].tx_done = true;
+      pspi_dma->tx_done = true;
     }
 
   }
@@ -187,12 +205,19 @@ void DMA1_Stream4_IRQHandler(void)
   HAL_DMA_IRQHandler(hspi2.hdmatx);
 }
 
+void DMA1_Stream6_IRQHandler(void)
+{
+  HAL_DMA_IRQHandler(hspi4.hdmatx);
+}
+
 
 void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
 {
 
   GPIO_InitTypeDef GPIO_InitStruct;
 
+
+  // BUGBUG:: Would be nice to more table drive this!
 
   if(hspi->Instance==SPI1)
   {
@@ -215,6 +240,7 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
     GPIO_InitStruct.Alternate = GPIO_AF5_SPI1;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
   }
+
   if(hspi->Instance==SPI2)
   {
     __HAL_RCC_SPI2_CLK_ENABLE();
@@ -272,6 +298,63 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
     }
   }
 
+  if(hspi->Instance==SPI4)
+  {
+    __HAL_RCC_SPI4_CLK_ENABLE();
+    // SCK - Arduino pin 58
+    GPIO_InitStruct.Pin       = GPIO_PIN_12;
+    GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull      = GPIO_PULLUP;
+    GPIO_InitStruct.Speed     = GPIO_SPEED_HIGH;
+    GPIO_InitStruct.Alternate = GPIO_AF5_SPI4;
+    HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+
+    /* SPI MISO GPIO pin configuration  59 */
+    GPIO_InitStruct.Pin       = GPIO_PIN_13;
+    GPIO_InitStruct.Alternate = GPIO_AF5_SPI4;
+    HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+
+    /* SPI MOSI GPIO pin configuration  60 */
+    GPIO_InitStruct.Pin       = GPIO_PIN_14;
+    GPIO_InitStruct.Alternate = GPIO_AF5_SPI4;
+    HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+
+
+    if(spi_dma[2].use == true && spi_dma[2].init == false)
+    {
+      spi_dma[2].init = true;
+
+      bsp_mpu_config();
+
+      __HAL_RCC_DMA1_CLK_ENABLE();
+
+      /*##-3- Configure the DMA ##################################################*/
+      /* Configure the DMA handler for Transmission process */
+      hdma4_tx.Instance                 = DMA1_Stream6;
+      hdma4_tx.Init.Channel             = DMA_CHANNEL_0;
+      hdma4_tx.Init.FIFOMode            = DMA_FIFOMODE_DISABLE;
+      hdma4_tx.Init.FIFOThreshold       = DMA_FIFO_THRESHOLD_FULL;
+      hdma4_tx.Init.MemBurst            = DMA_MBURST_INC4;
+      hdma4_tx.Init.PeriphBurst         = DMA_PBURST_INC4;
+      hdma4_tx.Init.Direction           = DMA_MEMORY_TO_PERIPH;
+      hdma4_tx.Init.PeriphInc           = DMA_PINC_DISABLE;
+      hdma4_tx.Init.MemInc              = DMA_MINC_ENABLE;
+      hdma4_tx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
+      hdma4_tx.Init.MemDataAlignment    = DMA_MDATAALIGN_BYTE;
+      hdma4_tx.Init.Mode                = DMA_NORMAL;
+      hdma4_tx.Init.Priority            = DMA_PRIORITY_LOW;
+
+      HAL_DMA_Init(&hdma2_tx);
+
+      /* Associate the initialized DMA handle to the the SPI handle */
+      __HAL_LINKDMA(hspi, hdmatx, hdma2_tx);
+
+
+      HAL_NVIC_SetPriority(DMA1_Stream6_IRQn, 1, 1);
+      HAL_NVIC_EnableIRQ(DMA1_Stream6_IRQn);
+    }
+  }
+
 }
 
 void HAL_SPI_MspDeInit(SPI_HandleTypeDef* hspi)
@@ -292,7 +375,7 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef* hspi)
     HAL_NVIC_DisableIRQ(SPI1_IRQn);
   }
 
-  if(hspi->Instance==SPI2)
+  else if(hspi->Instance==SPI2)
   {
     __HAL_RCC_SPI2_FORCE_RESET();
     __HAL_RCC_SPI2_RELEASE_RESET();
@@ -306,5 +389,18 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef* hspi)
     /* Peripheral interrupt Deinit*/
     HAL_NVIC_DisableIRQ(SPI2_IRQn);
   }
+  else if(hspi->Instance==SPI4)
+  {
+    __HAL_RCC_SPI4_FORCE_RESET();
+    __HAL_RCC_SPI4_RELEASE_RESET();
+    __HAL_RCC_SPI4_CLK_DISABLE();
 
+
+    HAL_GPIO_DeInit(GPIOE, GPIO_PIN_12);
+    HAL_GPIO_DeInit(GPIOE, GPIO_PIN_13);
+    HAL_GPIO_DeInit(GPIOE, GPIO_PIN_14);
+
+    /* Peripheral interrupt Deinit*/
+    HAL_NVIC_DisableIRQ(SPI4_IRQn);
+  }
 }

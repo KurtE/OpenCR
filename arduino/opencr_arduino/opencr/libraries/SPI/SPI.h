@@ -48,6 +48,9 @@ extern SPI_HandleTypeDef hspi1;
 #ifdef USE_SPI2
 extern SPI_HandleTypeDef hspi2;
 #endif
+#ifdef USE_SPI4
+extern SPI_HandleTypeDef hspi4;
+#endif
 
 
 class SPISettings {
@@ -123,6 +126,7 @@ class SPIClass {
     }
     uint8_t transfer(uint8_t _data) const;
     uint16_t transfer16(uint16_t data);
+    void transfer(void *buf, size_t count);
     
 
     // Write only functions similar to ESP32 and the like
@@ -165,5 +169,6 @@ class SPIClass {
 
 extern SPIClass SPI;
 extern SPIClass SPI_IMU;
+extern SPIClass SPI_EXT;
 
 #endif
