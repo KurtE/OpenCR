@@ -205,7 +205,7 @@ void DMA1_Stream4_IRQHandler(void)
   HAL_DMA_IRQHandler(hspi2.hdmatx);
 }
 
-void DMA1_Stream6_IRQHandler(void)
+void DMA2_Stream1_IRQHandler(void)
 {
   HAL_DMA_IRQHandler(hspi4.hdmatx);
 }
@@ -326,12 +326,12 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
 
       bsp_mpu_config();
 
-      __HAL_RCC_DMA1_CLK_ENABLE();
+      __HAL_RCC_DMA2_CLK_ENABLE();
 
       /*##-3- Configure the DMA ##################################################*/
       /* Configure the DMA handler for Transmission process */
-      hdma4_tx.Instance                 = DMA1_Stream6;
-      hdma4_tx.Init.Channel             = DMA_CHANNEL_0;
+      hdma4_tx.Instance                 = DMA2_Stream1;
+      hdma4_tx.Init.Channel             = DMA_CHANNEL_4;
       hdma4_tx.Init.FIFOMode            = DMA_FIFOMODE_DISABLE;
       hdma4_tx.Init.FIFOThreshold       = DMA_FIFO_THRESHOLD_FULL;
       hdma4_tx.Init.MemBurst            = DMA_MBURST_INC4;
@@ -344,14 +344,14 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
       hdma4_tx.Init.Mode                = DMA_NORMAL;
       hdma4_tx.Init.Priority            = DMA_PRIORITY_LOW;
 
-      HAL_DMA_Init(&hdma2_tx);
+      HAL_DMA_Init(&hdma4_tx);
 
       /* Associate the initialized DMA handle to the the SPI handle */
-      __HAL_LINKDMA(hspi, hdmatx, hdma2_tx);
+      __HAL_LINKDMA(hspi, hdmatx, hdma4_tx);
 
 
-      HAL_NVIC_SetPriority(DMA1_Stream6_IRQn, 1, 1);
-      HAL_NVIC_EnableIRQ(DMA1_Stream6_IRQn);
+      HAL_NVIC_SetPriority(DMA2_Stream1_IRQn, 1, 1);
+      HAL_NVIC_EnableIRQ(DMA2_Stream1_IRQn);
     }
   }
 
