@@ -97,16 +97,6 @@ uint8_t SPIClass::transfer(uint8_t data) const{
 	return ret;
 }
 
-void SPIClass::transfer(void *buf, size_t count) {
-  uint8_t *pb = (uint8_t*)buf;
-  while (count) 
-  {
-    // This version overwrites the buffer (ARG)
-    *pb = transfer(*pb); 
-    pb++;
-    count--;
-  }
-}
 
 uint16_t SPIClass::transfer16(uint16_t data) {
   uint8_t tBuf[2];
@@ -124,26 +114,46 @@ uint16_t SPIClass::transfer16(uint16_t data) {
 }
 
 
-void SPIClass::writeFast(void *buf, size_t count) {
-  uint32_t t_time;
-  
-  drv_spi_start_dma_tx(_hspi, (uint8_t *)buf, count);
+void SPIClass::transfer(const void * buf, void * retbuf, size_t count) {
+  if ((count == 0) || ((buf == NULL) && (retbuf == NULL))) return;    // nothing to do
 
-  t_time = millis();
+  bool dma_enabled = drv_spi_dma_enabled(_hspi);
+  if (retbuf == NULL) { 
+    // write only transfer
+    if (dma_enabled) {
+      uint32_t t_time;
+      
+      drv_spi_start_dma_tx(_hspi, (uint8_t *)buf, count);
 
-  while(1)
-  {
-    if(drv_spi_is_dma_tx_done(_hspi))
-    {
-      break;
+      t_time = millis();
+
+      while(1)
+      {
+        if(drv_spi_is_dma_tx_done(_hspi))
+        {
+          break;
+        }
+        if((millis()-t_time) > 1000)
+        {
+          break;
+        }
+
+      }
     }
-    if((millis()-t_time) > 1000)
+    else 
     {
-      break;
-    }
+      HAL_SPI_Transmit(_hspi, (uint8_t *)buf, count, 0xffff);
+    } 
+  } else if (retbuf == NULL) {
+    // Read only buffer
+    HAL_SPI_Receive(_hspi, (uint8_t*)retbuf, count, 0xffff);
+  } else {
+    // standard Read/write buffer transfer
+    // start off without DMA support
+    HAL_SPI_TransmitReceive(_hspi, (uint8_t *)buf, (uint8_t*)retbuf, count, 0xffff);
+
   }
 }
-
 
 // Write only functions many used by Adafruit libraries.
 

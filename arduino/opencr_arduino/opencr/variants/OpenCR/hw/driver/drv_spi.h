@@ -26,6 +26,7 @@
 
 int     drv_spi_init();
 void    drv_spi_enable_dma(SPI_HandleTypeDef* hspi);
+bool    drv_spi_dma_enabled(SPI_HandleTypeDef* hspi);
 uint8_t drv_spi_is_dma_tx_done(SPI_HandleTypeDef* hspi);
 void    drv_spi_start_dma_tx(SPI_HandleTypeDef* hspi, uint8_t *p_buf, uint32_t length);
 

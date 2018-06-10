@@ -25,6 +25,11 @@
 // SPI_HAS_TRANSACTION means SPI has beginTransaction(), endTransaction(),
 // usingInterrupt(), and SPISetting(clock, bitOrder, dataMode)
 #define SPI_HAS_TRANSACTION 1
+// SPI_HAS_TRANSFER_BUF - is defined to signify that this library supports
+// a version of transfer which allows you to pass in both TX and RX buffer
+// pointers, either of which could be NULL
+#define SPI_HAS_TRANSFER_BUF 1
+
 
 
 #define SPI_CLOCK_DIV4      0x00
@@ -126,15 +131,20 @@ class SPIClass {
     }
     uint8_t transfer(uint8_t _data) const;
     uint16_t transfer16(uint16_t data);
-    void transfer(void *buf, size_t count);
-    
+//    void transfer(void *buf, size_t count);
+
+    void inline transfer(void *buf, size_t count) {transfer(buf, buf, count);}
+    //void setTransferWriteFill(uint8_t ch ) {_transferWriteFill = ch;}
+    void transfer(const void * buf, void * retbuf, size_t count);
+
 
     // Write only functions similar to ESP32 and the like
     void write(uint8_t data);
     void write16(uint16_t data);
     void write32(uint32_t data);
     void writeBytes(uint8_t * data, uint32_t size);
-    void writeFast(void *buf, size_t count);//For waveshare HX8347
+
+    void inline writeFast(void *buf, size_t count) {transfer(buf, NULL, count);}
     void writePixels(const void * data, uint32_t size);//ili9341 compatible
 
 
@@ -144,7 +154,7 @@ class SPIClass {
 
 
   private:
-    uint32_t _Mode;
+    //uint32_t _Mode;
     uint32_t _Direction;
     uint32_t _DataSize;
     uint32_t _CLKPolarity;
@@ -159,6 +169,7 @@ class SPIClass {
     uint8_t _clockDiv;
     uint8_t _bitOrder;
     uint8_t _dataMode;
+    uint8_t _dma_support;
 
 
     SPI_HandleTypeDef *_hspi;
