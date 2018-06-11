@@ -127,17 +127,14 @@ void SPIClass::transfer(const void * buf, void * retbuf, size_t count) {
 
       t_time = millis();
 
-      while(1)
+      while((millis()-t_time) <= 1000)
       {
         if(drv_spi_is_dma_tx_done(_hspi))
         {
-          break;
+          // See if we can wait for the busy flag to be completed...
+          if((_hspi->Instance->SR & SPI_FLAG_BSY) == 0)
+            break;
         }
-        if((millis()-t_time) > 1000)
-        {
-          break;
-        }
-
       }
     }
     else 
