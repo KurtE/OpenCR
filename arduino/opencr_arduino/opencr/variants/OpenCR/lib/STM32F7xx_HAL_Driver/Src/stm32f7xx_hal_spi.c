@@ -403,7 +403,7 @@ HAL_StatusTypeDef HAL_SPI_DeInit(SPI_HandleTypeDef *hspi)
   * @param  Timeout: Timeout duration
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *pData, uint16_t Size, uint32_t Timeout)
+HAL_StatusTypeDef HAL_SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *pData, uint32_t Size, uint32_t Timeout)
 {
   assert_param(IS_SPI_DIRECTION_2LINES_OR_1LINE(hspi->Init.Direction));
 
@@ -548,7 +548,7 @@ HAL_StatusTypeDef HAL_SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *pData, uint
   * @param  Timeout: Timeout duration
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_SPI_Receive(SPI_HandleTypeDef *hspi, uint8_t *pData, uint16_t Size, uint32_t Timeout)
+HAL_StatusTypeDef HAL_SPI_Receive(SPI_HandleTypeDef *hspi, uint8_t *pData, uint32_t Size, uint32_t Timeout)
 {
   __IO uint16_t tmpreg;
   
@@ -742,7 +742,7 @@ HAL_StatusTypeDef HAL_SPI_Receive(SPI_HandleTypeDef *hspi, uint8_t *pData, uint1
   * @param  Timeout: Timeout duration
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_SPI_TransmitReceive(SPI_HandleTypeDef *hspi, uint8_t *pTxData, uint8_t *pRxData, uint16_t Size, uint32_t Timeout)
+HAL_StatusTypeDef HAL_SPI_TransmitReceive(SPI_HandleTypeDef *hspi, uint8_t *pTxData, uint8_t *pRxData, uint32_t Size, uint32_t Timeout)
 {
   __IO uint16_t tmpreg = 0;
   uint32_t tickstart = HAL_GetTick();
@@ -968,7 +968,7 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive(SPI_HandleTypeDef *hspi, uint8_t *pTxD
   * @param  Size: amount of data to be sent
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_SPI_Transmit_IT(SPI_HandleTypeDef *hspi, uint8_t *pData, uint16_t Size)
+HAL_StatusTypeDef HAL_SPI_Transmit_IT(SPI_HandleTypeDef *hspi, uint8_t *pData, uint32_t Size)
 {
   assert_param(IS_SPI_DIRECTION_2LINES_OR_1LINE(hspi->Init.Direction));
   
@@ -1048,7 +1048,7 @@ HAL_StatusTypeDef HAL_SPI_Transmit_IT(SPI_HandleTypeDef *hspi, uint8_t *pData, u
   * @param  Size: amount of data to be sent
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_SPI_Receive_IT(SPI_HandleTypeDef *hspi, uint8_t *pData, uint16_t Size)
+HAL_StatusTypeDef HAL_SPI_Receive_IT(SPI_HandleTypeDef *hspi, uint8_t *pData, uint32_t Size)
 {
   if(hspi->State == HAL_SPI_STATE_READY)
   {
@@ -1154,7 +1154,7 @@ HAL_StatusTypeDef HAL_SPI_Receive_IT(SPI_HandleTypeDef *hspi, uint8_t *pData, ui
   * @param  Size: amount of data to be sent and received
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_SPI_TransmitReceive_IT(SPI_HandleTypeDef *hspi, uint8_t *pTxData, uint8_t *pRxData, uint16_t Size)
+HAL_StatusTypeDef HAL_SPI_TransmitReceive_IT(SPI_HandleTypeDef *hspi, uint8_t *pTxData, uint8_t *pRxData, uint32_t Size)
 {
   assert_param(IS_SPI_DIRECTION_2LINES(hspi->Init.Direction));
   
@@ -1251,7 +1251,7 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive_IT(SPI_HandleTypeDef *hspi, uint8_t *p
   * @param  Size: amount of data to be sent
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_SPI_Transmit_DMA(SPI_HandleTypeDef *hspi, uint8_t *pData, uint16_t Size)
+HAL_StatusTypeDef HAL_SPI_Transmit_DMA(SPI_HandleTypeDef *hspi, uint8_t *pData, uint32_t Size)
 {    
   assert_param(IS_SPI_DIRECTION_2LINES_OR_1LINE(hspi->Init.Direction));
 
@@ -1341,7 +1341,7 @@ HAL_StatusTypeDef HAL_SPI_Transmit_DMA(SPI_HandleTypeDef *hspi, uint8_t *pData, 
 * @param  Size: amount of data to be sent
 * @retval HAL status
 */
-HAL_StatusTypeDef HAL_SPI_Receive_DMA(SPI_HandleTypeDef *hspi, uint8_t *pData, uint16_t Size)
+HAL_StatusTypeDef HAL_SPI_Receive_DMA(SPI_HandleTypeDef *hspi, uint8_t *pData, uint32_t Size)
 {
   if(hspi->State != HAL_SPI_STATE_READY)
   {
@@ -1362,7 +1362,7 @@ HAL_StatusTypeDef HAL_SPI_Receive_DMA(SPI_HandleTypeDef *hspi, uint8_t *pData, u
   hspi->RxXferSize  = Size;
   hspi->RxXferCount = Size;
   hspi->pTxBuffPtr  = (uint8_t *)NULL;
-  hspi->TxXferSize  = 0;
+  hspi->TxXferSize  = 0;  //???
   hspi->TxXferCount = 0;
 
   if((hspi->Init.Mode == SPI_MODE_MASTER) && (hspi->Init.Direction == SPI_DIRECTION_2LINES))
@@ -1445,10 +1445,11 @@ HAL_StatusTypeDef HAL_SPI_Receive_DMA(SPI_HandleTypeDef *hspi, uint8_t *pData, u
   * @param  Size: amount of data to be sent
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_SPI_TransmitReceive_DMA(SPI_HandleTypeDef *hspi, uint8_t *pTxData, uint8_t *pRxData, uint16_t Size)
+HAL_StatusTypeDef HAL_SPI_TransmitReceive_DMA(SPI_HandleTypeDef *hspi, uint8_t *pTxData, uint8_t *pRxData, uint32_t Size)
 {
   assert_param(IS_SPI_DIRECTION_2LINES(hspi->Init.Direction));
-  
+//  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 1);    // digitalWrite(1, HIGH);
+
   if((hspi->State == HAL_SPI_STATE_READY) ||
      ((hspi->Init.Mode == SPI_MODE_MASTER) && (hspi->Init.Direction == SPI_DIRECTION_2LINES) && (hspi->State == HAL_SPI_STATE_BUSY_RX)))
   {
@@ -1580,6 +1581,7 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive_DMA(SPI_HandleTypeDef *hspi, uint8_t *
     /* Enable Tx DMA Request */  
     hspi->Instance->CR2 |= SPI_CR2_TXDMAEN;
         
+//    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);    // digitalWrite(1, HIGH);
     return HAL_OK;
   }
   else
@@ -1901,6 +1903,7 @@ uint32_t HAL_SPI_GetError(SPI_HandleTypeDef *hspi)
   */
 static void SPI_DMATransmitCplt(DMA_HandleTypeDef *hdma)
 {
+//  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 1);    // digitalWrite(1, HIGH);
   SPI_HandleTypeDef* hspi = ( SPI_HandleTypeDef* )((DMA_HandleTypeDef* )hdma)->Parent;
 
   /* DMA Normal Mode */
@@ -1925,6 +1928,7 @@ static void SPI_DMATransmitCplt(DMA_HandleTypeDef *hdma)
     }
   }
   HAL_SPI_TxCpltCallback(hspi);
+//  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);    // digitalWrite(1, LOW);
 }
 
 /**
@@ -1937,6 +1941,7 @@ static void SPI_DMAReceiveCplt(DMA_HandleTypeDef *hdma)
 {
   __IO uint16_t tmpreg;
   SPI_HandleTypeDef* hspi = ( SPI_HandleTypeDef* )((DMA_HandleTypeDef* )hdma)->Parent;
+//  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 1);    // digitalWrite(1, HIGH);
   
   /* DMA Normal mode */
   if((hdma->Instance->CR & DMA_SxCR_CIRC) == 0)
@@ -2007,6 +2012,7 @@ static void SPI_DMAReceiveCplt(DMA_HandleTypeDef *hdma)
   {
     HAL_SPI_RxCpltCallback(hspi);
   }
+//  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);    // digitalWrite(1, LOW);
 }
 
 /**
@@ -2017,6 +2023,7 @@ static void SPI_DMAReceiveCplt(DMA_HandleTypeDef *hdma)
   */
 static void SPI_DMATransmitReceiveCplt(DMA_HandleTypeDef *hdma)
 {
+//  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 1);    // digitalWrite(1, HIGH);
   __IO int16_t tmpreg;
   SPI_HandleTypeDef* hspi = ( SPI_HandleTypeDef* )((DMA_HandleTypeDef* )hdma)->Parent;
   
@@ -2076,6 +2083,7 @@ static void SPI_DMATransmitReceiveCplt(DMA_HandleTypeDef *hdma)
       HAL_SPI_ErrorCallback(hspi);
     }
   }
+//  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);    // digitalWrite(1, HIGH);
 }
 
 /**

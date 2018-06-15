@@ -16,12 +16,15 @@
 
 typedef struct
 {
-  bool use;
-  bool init;
-  bool tx_done;
+  bool    use;
+  bool    init;
+  uint32_t length_left;
+  bool    transfer_done;
+  // TX state variables
   uint8_t *p_tx_buf;
-  uint8_t *p_tx_buf_next;
-  uint32_t tx_length_next;
+  // RX state variables - Maybe some can be combined with TX
+  uint8_t *p_rx_buf;
+  DrvSPIDMACallback dma_callback;    // Optional function to call at DMA completion
 } spi_dma_t;
 
 
@@ -30,6 +33,7 @@ SPI_HandleTypeDef hspi2;
 SPI_HandleTypeDef hspi4;
 
 static DMA_HandleTypeDef hdma2_tx;
+static DMA_HandleTypeDef hdma2_rx;
 static DMA_HandleTypeDef hdma4_tx;
 static DMA_HandleTypeDef hdma4_rx;
 
@@ -98,11 +102,12 @@ int drv_spi_init()
   for(i=0; i<SPI_MAX_CH; i++)
   {
     spi_dma[i].p_tx_buf         = NULL;
-    spi_dma[i].p_tx_buf_next    = NULL;
+    spi_dma[i].p_rx_buf         = NULL;
     spi_dma[i].use              = false;
     spi_dma[i].init             = false;
-    spi_dma[i].tx_done          = false;
-    spi_dma[i].tx_length_next   = 0;
+    spi_dma[i].transfer_done    = false;
+    spi_dma[i].length_left      = 0;
+    spi_dma[i].dma_callback     = NULL;
   }
 
   return 0;
@@ -130,35 +135,38 @@ bool drv_spi_dma_enabled(SPI_HandleTypeDef* hspi)
  return pspi_dma->use;
 }
 
+//=================================================================
+// Support for DMA TX Only
+//=================================================================
+
 uint8_t drv_spi_is_dma_tx_done(SPI_HandleTypeDef* hspi)
 {
   volatile spi_dma_t *pspi_dma = drv_map_haspi_to_spi_dma(hspi);
   if (!pspi_dma || (pspi_dma->use != true)) return true;  
-  return pspi_dma->tx_done;
+  return pspi_dma->transfer_done;
 }
 
 
-void drv_spi_start_dma_tx(SPI_HandleTypeDef* hspi, uint8_t *p_buf, uint32_t length)
+void drv_spi_start_dma_tx(SPI_HandleTypeDef* hspi, uint8_t *p_buf, uint32_t length, DrvSPIDMACallback dma_callback)
 {
  volatile spi_dma_t *pspi_dma = drv_map_haspi_to_spi_dma(hspi);
 
   if ((pspi_dma == NULL) || (pspi_dma->use != true)) return ;
 
+  pspi_dma->transfer_done       = false;
+  pspi_dma->p_tx_buf      =  p_buf;
+  pspi_dma->transfer_done   = false;
+  pspi_dma->dma_callback    = dma_callback;
+
   if(length > SPI_TX_DMA_MAX_LENGTH)
   {
-    pspi_dma->tx_done       = false;
-    pspi_dma->tx_length_next= length - SPI_TX_DMA_MAX_LENGTH;
-    pspi_dma->p_tx_buf      =  p_buf;
-    pspi_dma->p_tx_buf_next = &p_buf[SPI_TX_DMA_MAX_LENGTH];
+    pspi_dma->length_left= length - SPI_TX_DMA_MAX_LENGTH;
 
     HAL_SPI_Transmit_DMA(hspi, pspi_dma->p_tx_buf, SPI_TX_DMA_MAX_LENGTH);
   }
   else
   {
-    pspi_dma->tx_done       = false;
-    pspi_dma->tx_length_next= 0;
-    pspi_dma->p_tx_buf      = p_buf;
-    pspi_dma->p_tx_buf_next = NULL;
+    pspi_dma->length_left= 0;
 
     HAL_SPI_Transmit_DMA(hspi, pspi_dma->p_tx_buf, length);
   }
@@ -166,35 +174,34 @@ void drv_spi_start_dma_tx(SPI_HandleTypeDef* hspi, uint8_t *p_buf, uint32_t leng
 
 void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi)
 {
-  volatile uint16_t length;
-
+//  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 1);    // digitalWrite(0, HIGH);
   volatile spi_dma_t *pspi_dma = drv_map_haspi_to_spi_dma(hspi);
+  volatile uint32_t length;
   if (pspi_dma && (hspi->Instance != SPI1))
   {
-    if(pspi_dma->tx_length_next > 0)
-    {
-      pspi_dma->p_tx_buf = pspi_dma->p_tx_buf_next;
+    length = pspi_dma->length_left;
 
-      if(pspi_dma->tx_length_next > SPI_TX_DMA_MAX_LENGTH)
+    if(length > 0)
+    {
+      pspi_dma->p_tx_buf += SPI_TX_DMA_MAX_LENGTH;
+      if (length > SPI_TX_DMA_MAX_LENGTH)
       {
         length = SPI_TX_DMA_MAX_LENGTH;
-        pspi_dma->tx_length_next = pspi_dma->tx_length_next - SPI_TX_DMA_MAX_LENGTH;
-        pspi_dma->p_tx_buf_next = &pspi_dma->p_tx_buf[SPI_TX_DMA_MAX_LENGTH];
       }
-      else
-      {
-        length = pspi_dma->tx_length_next;
-        pspi_dma->tx_length_next = 0;
-        pspi_dma->p_tx_buf_next = NULL;
-      }
+      pspi_dma->length_left -= length;
       HAL_SPI_Transmit_DMA(hspi, pspi_dma->p_tx_buf, length);
     }
     else
     {
-      pspi_dma->tx_done = true;
+      pspi_dma->transfer_done = true;
+      if (pspi_dma->dma_callback) 
+      {
+        (*pspi_dma->dma_callback)(hspi);
+      }
     }
 
   }
+//  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 0);    // digitalWrite(0, HIGH);
 }
 
 
@@ -210,7 +217,154 @@ void DMA2_Stream1_IRQHandler(void)
   HAL_DMA_IRQHandler(hspi4.hdmatx);
 }
 
+//=================================================================
+// Support for DMA RX Only
+//=================================================================
+uint8_t drv_spi_is_dma_rx_done(SPI_HandleTypeDef* hspi)
+{
+  volatile spi_dma_t *pspi_dma = drv_map_haspi_to_spi_dma(hspi);
+  if (!pspi_dma || (pspi_dma->use != true)) return true;  
+  return pspi_dma->transfer_done;
+}
 
+
+void drv_spi_start_dma_rx(SPI_HandleTypeDef* hspi, uint8_t *p_buf, uint32_t length, DrvSPIDMACallback dma_callback)
+{
+ volatile spi_dma_t *pspi_dma = drv_map_haspi_to_spi_dma(hspi);
+
+  if ((pspi_dma == NULL) || (pspi_dma->use != true)) return ;
+
+  // Assume TX and RX max length are the same
+  pspi_dma->transfer_done       = false;
+  pspi_dma->p_rx_buf      =  p_buf;
+  pspi_dma->transfer_done   = false;
+  pspi_dma->dma_callback    = dma_callback;
+
+  if(length > SPI_TX_DMA_MAX_LENGTH)
+  {
+    pspi_dma->length_left= length - SPI_TX_DMA_MAX_LENGTH;
+    HAL_SPI_Receive_DMA(hspi, pspi_dma->p_rx_buf, SPI_TX_DMA_MAX_LENGTH);
+  }
+  else
+  {
+    pspi_dma->length_left= 0;
+    HAL_SPI_Receive_DMA(hspi, pspi_dma->p_rx_buf, length);
+  }
+}
+
+void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
+{
+
+  volatile spi_dma_t *pspi_dma = drv_map_haspi_to_spi_dma(hspi);
+  if (pspi_dma && (hspi->Instance != SPI1))
+  {
+    volatile uint32_t length = pspi_dma->length_left;
+    if(length > 0)
+    {
+      pspi_dma->p_rx_buf += SPI_TX_DMA_MAX_LENGTH;
+
+      if (length > SPI_TX_DMA_MAX_LENGTH)
+      {
+        length = SPI_TX_DMA_MAX_LENGTH;
+      }
+      pspi_dma->length_left -= length;
+      HAL_SPI_Receive_DMA(hspi, pspi_dma->p_rx_buf, length);
+    }
+    else
+    {
+      pspi_dma->transfer_done = true;
+      if (pspi_dma->dma_callback) 
+      {
+        (*pspi_dma->dma_callback)(hspi);
+      }
+    }
+
+  }
+}
+
+
+// SPIx_DMA_RX_IRQHandler(void)
+//
+void DMA1_Stream3_IRQHandler(void)
+{
+  HAL_DMA_IRQHandler(hspi2.hdmarx);
+}
+
+void DMA2_Stream0_IRQHandler(void)
+{
+  HAL_DMA_IRQHandler(hspi4.hdmarx);
+}
+
+//=================================================================
+// Support for DMA Transfer
+//=================================================================
+uint8_t drv_spi_is_dma_txrx_done(SPI_HandleTypeDef* hspi)
+{
+  volatile spi_dma_t *pspi_dma = drv_map_haspi_to_spi_dma(hspi);
+  if (!pspi_dma || (pspi_dma->use != true)) return true;  
+  return pspi_dma->transfer_done;
+}
+
+
+void drv_spi_start_dma_txrx(SPI_HandleTypeDef* hspi, uint8_t *p_buf, uint8_t *p_rxbuf, uint32_t length, DrvSPIDMACallback dma_callback)
+{
+ volatile spi_dma_t *pspi_dma = drv_map_haspi_to_spi_dma(hspi);
+
+  if ((pspi_dma == NULL) || (pspi_dma->use != true)) return ;
+
+  // Assume TX and RX max length are the same
+  pspi_dma->p_tx_buf        =  p_buf;
+  pspi_dma->p_rx_buf        =  p_rxbuf;
+  pspi_dma->length_left     = length;
+  pspi_dma->transfer_done   = false;
+  pspi_dma->dma_callback    = dma_callback;
+
+
+  if (length > SPI_TX_DMA_MAX_LENGTH) 
+  {
+    length = SPI_TX_DMA_MAX_LENGTH;
+  }
+  pspi_dma->length_left -= length;
+  HAL_SPI_TransmitReceive_DMA(hspi, pspi_dma->p_tx_buf, pspi_dma->p_rx_buf, length);
+}
+
+void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
+{
+  volatile spi_dma_t *pspi_dma = drv_map_haspi_to_spi_dma(hspi);
+  //HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 1);    // digitalWrite(0, HIGH);
+  if (pspi_dma && (hspi->Instance != SPI1))
+  {
+    volatile uint32_t length = pspi_dma->length_left;
+    if(length > 0)
+    {
+      pspi_dma->p_rx_buf += SPI_TX_DMA_MAX_LENGTH;
+      pspi_dma->p_tx_buf += SPI_TX_DMA_MAX_LENGTH;
+
+      if (length > SPI_TX_DMA_MAX_LENGTH)
+      {
+        length = SPI_TX_DMA_MAX_LENGTH;
+      }
+      pspi_dma->length_left -= length;
+      HAL_SPI_TransmitReceive_DMA(hspi, pspi_dma->p_tx_buf, pspi_dma->p_rx_buf, length);
+    }
+    else
+    {
+      pspi_dma->transfer_done = true;
+      if (pspi_dma->dma_callback) 
+      {
+        (*pspi_dma->dma_callback)(hspi);
+      }
+    }
+
+  }
+  //HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 0);    // digitalWrite(0, LOW);
+}
+
+
+
+//=================================================================
+// Init HAL SPI
+//=================================================================
 void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
 {
 
@@ -295,6 +449,30 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
 
       HAL_NVIC_SetPriority(DMA1_Stream4_IRQn, 1, 1);
       HAL_NVIC_EnableIRQ(DMA1_Stream4_IRQn);
+
+      /* Configure the DMA handler for receive process */
+      hdma2_rx.Instance                 = DMA1_Stream3;
+      hdma2_rx.Init.Channel             = DMA_CHANNEL_0;
+      hdma2_rx.Init.FIFOMode            = DMA_FIFOMODE_DISABLE;
+      hdma2_rx.Init.FIFOThreshold       = DMA_FIFO_THRESHOLD_FULL;
+      hdma2_rx.Init.MemBurst            = DMA_MBURST_INC4;
+      hdma2_rx.Init.PeriphBurst         = DMA_PBURST_INC4;
+      hdma2_rx.Init.Direction           = DMA_PERIPH_TO_MEMORY;
+      hdma2_rx.Init.PeriphInc           = DMA_PINC_DISABLE;
+      hdma2_rx.Init.MemInc              = DMA_MINC_ENABLE;
+      hdma2_rx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
+      hdma2_rx.Init.MemDataAlignment    = DMA_MDATAALIGN_BYTE;
+      hdma2_rx.Init.Mode                = DMA_NORMAL;
+      hdma2_rx.Init.Priority            = DMA_PRIORITY_LOW;
+
+      HAL_DMA_Init(&hdma2_rx);
+
+      /* Associate the initialized DMA handle to the the SPI handle */
+      __HAL_LINKDMA(hspi, hdmarx, hdma2_rx);
+
+
+      HAL_NVIC_SetPriority(DMA1_Stream3_IRQn, 1, 1);
+      HAL_NVIC_EnableIRQ(DMA1_Stream3_IRQn);
     }
   }
 

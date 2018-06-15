@@ -30,6 +30,11 @@
 // pointers, either of which could be NULL
 #define SPI_HAS_TRANSFER_BUF 1
 
+#if defined(__has_include) && __has_include(<EventResponder.h>)
+#define SPI_HAS_TRANSFER_ASYNC 1
+#include <EventResponder.h>
+#endif
+
 
 
 #define SPI_CLOCK_DIV4      0x00
@@ -152,6 +157,11 @@ class SPIClass {
     void setClockDivider(uint8_t clockDiv);
     void setDataMode(uint8_t dataMode);
 
+#ifdef SPI_HAS_TRANSFER_ASYNC
+  bool transfer(const void *txBuffer, void *rxBuffer, size_t count,  EventResponderRef  event_responder);
+#endif
+
+  enum DMAState {DMA_NOTINITIALIZED=0, DMA_IDLE, DMA_ACTIVE, DMA_COMPETED};
 
   private:
     //uint32_t _Mode;
@@ -169,11 +179,16 @@ class SPIClass {
     uint8_t _clockDiv;
     uint8_t _bitOrder;
     uint8_t _dataMode;
-    uint8_t _dma_support;
 
 
     SPI_HandleTypeDef *_hspi;
     SPI_TypeDef *_spiPort;
+#ifdef SPI_HAS_TRANSFER_ASYNC
+    uint8_t  _dma_state;
+    EventResponder *_dma_event_responder;
+static void dmaCallback(SPI_HandleTypeDef* hspi);
+    void processDMACallback();
+#endif
     void init(void);
 
 };

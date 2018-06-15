@@ -75,7 +75,8 @@ void SPIClass::init(void){
   _clockDiv = SPI_CLOCK_DIV16;
   _bitOrder = MSBFIRST;
   _dataMode = SPI_MODE0;
-
+  _dma_state = DMA_NOTINITIALIZED;
+  _dma_event_responder   = NULL;
   _hspi->Instance               = _spiPort;
   _hspi->Init.Mode              = SPI_MODE_MASTER;
   _hspi->Init.Direction         = SPI_DIRECTION_2LINES;
@@ -117,9 +118,11 @@ uint16_t SPIClass::transfer16(uint16_t data) {
 void SPIClass::transfer(const void * buf, void * retbuf, size_t count) {
   if ((count == 0) || ((buf == NULL) && (retbuf == NULL))) return;    // nothing to do
 
-  bool dma_enabled = drv_spi_dma_enabled(_hspi);
+//  bool dma_enabled = drv_spi_dma_enabled(_hspi);
+  HAL_StatusTypeDef status;
   if (retbuf == NULL) { 
     // write only transfer
+#if 0
     if (dma_enabled) {
       uint32_t t_time;
       
@@ -138,17 +141,22 @@ void SPIClass::transfer(const void * buf, void * retbuf, size_t count) {
       }
     }
     else 
+#endif
     {
-      HAL_SPI_Transmit(_hspi, (uint8_t *)buf, count, 0xffff);
+      status = HAL_SPI_Transmit(_hspi, (uint8_t *)buf, count, 0xffff);
     } 
-  } else if (retbuf == NULL) {
+  } else if (buf == NULL) {
     // Read only buffer
-    HAL_SPI_Receive(_hspi, (uint8_t*)retbuf, count, 0xffff);
+    status = HAL_SPI_Receive(_hspi, (uint8_t*)retbuf, count, 0xffff);
   } else {
     // standard Read/write buffer transfer
     // start off without DMA support
-    HAL_SPI_TransmitReceive(_hspi, (uint8_t *)buf, (uint8_t*)retbuf, count, 0xffff);
-
+    status = HAL_SPI_TransmitReceive(_hspi, (uint8_t *)buf, (uint8_t*)retbuf, count, 0xffff);
+  }
+  if (status != HAL_OK) 
+  {
+    Serial.print("transfer status: ");
+    Serial.println((int)status, DEC);
   }
 }
 
@@ -276,4 +284,67 @@ void SPIClass::setDataMode(uint8_t dataMode){
       HAL_SPI_Init(_hspi);
       break;
   }
+}
+//=========================================================================
+// Main Async Transfer function
+//=========================================================================
+
+bool SPIClass::transfer(const void *buf, void *retbuf, size_t count, EventResponderRef event_responder) {
+//    Serial.println("Transfer with Event Call"); Serial.flush();
+  if (_dma_state == DMA_ACTIVE)
+    return false; // already active
+  else if (_dma_state == DMA_NOTINITIALIZED)
+  {
+//    Serial.println("Before SPI enable DMA"); Serial.flush();
+    drv_spi_enable_dma(_hspi);
+    _dma_state = DMA_IDLE;
+  }
+//  Serial.println("Before Clear event");  Serial.flush();
+  event_responder.clearEvent(); // Make sure it is not set yet
+  if (count < 2) {
+    // Use non-async version to simplify cases...
+    transfer(buf, retbuf, count);
+    event_responder.triggerEvent();
+    return true;
+  }
+
+  if ((count == 0) || ((buf == NULL) && (retbuf == NULL))) return false;    // nothing to do
+
+  _dma_event_responder = &event_responder;  // remember the event object
+  bool dma_enabled = drv_spi_dma_enabled(_hspi);
+  if (retbuf == NULL) { 
+    // write only transfer
+    drv_spi_start_dma_tx(_hspi, (uint8_t *)buf, count, &dmaCallback);
+
+  } else if (buf == NULL) {
+    // Read only buffer
+    drv_spi_start_dma_rx(_hspi, (uint8_t *)retbuf, count, &dmaCallback);
+  } else {
+    // standard Read/write buffer transfer
+    // start off without DMA support
+//    Serial.println("Before drv_spi_start_dma_txrx");
+    drv_spi_start_dma_txrx(_hspi, (uint8_t *)buf, (uint8_t *)retbuf, count, &dmaCallback);
+  }
+  _dma_state = DMA_ACTIVE;
+  return true;
+}
+
+void SPIClass::dmaCallback(SPI_HandleTypeDef* hspi)
+{
+  // Static function call from our DMA DRV code
+  if (hspi == &hspi1) SPI_IMU.processDMACallback();
+  else if (hspi == &hspi2) SPI.processDMACallback();
+  else if (hspi == &hspi4) SPI_EXT.processDMACallback();
+
+}
+
+void SPIClass::processDMACallback()
+{
+  // We have been called back, that the DMA completed
+  if (_dma_event_responder)
+  {
+    _dma_state = DMA_COMPETED;   // set back to 1 in case our call wants to start up dma again
+    _dma_event_responder->triggerEvent();
+  }
+
 }
