@@ -329,7 +329,7 @@ void drv_spi_start_dma_txrx(SPI_HandleTypeDef* hspi, uint8_t *p_buf, uint8_t *p_
 void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
 {
   volatile spi_dma_t *pspi_dma = drv_map_haspi_to_spi_dma(hspi);
-  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 1);    // digitalWrite(0, HIGH);
+  //HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 1);    // digitalWrite(0, HIGH);
   if (pspi_dma && (hspi->Instance != SPI1))
   {
     volatile uint32_t length = pspi_dma->length_left;
@@ -362,7 +362,7 @@ void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
     }
 
   }
-  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 0);    // digitalWrite(0, LOW);
+  //HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 0);    // digitalWrite(0, LOW);
 }
 
 

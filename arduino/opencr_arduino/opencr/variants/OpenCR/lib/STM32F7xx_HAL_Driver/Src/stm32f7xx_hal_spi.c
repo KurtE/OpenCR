@@ -1460,13 +1460,12 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive_DMA(SPI_HandleTypeDef *hspi, uint8_t *
     {
       return  HAL_ERROR;                                    
     }
-    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 1);    // digitalWrite(1, HIGH);
+    // HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 1);    // digitalWrite(1, HIGH);
 
-    // More tests
-    if (pTxDummy[0] != 0) {
-        vcp_printf("HSP TRDMA: %x!=0\n", pTxDummy[0]);
-
-    }
+//    // More tests
+//    if (pTxDummy[0] != 0) {
+//        vcp_printf("HSP TRDMA: %x!=0\n", pTxDummy[0]);
+//    }
     
     /* Process locked */
     __HAL_LOCK(hspi);
@@ -1607,7 +1606,7 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive_DMA(SPI_HandleTypeDef *hspi, uint8_t *
     /* Enable Tx DMA Request */  
     hspi->Instance->CR2 |= SPI_CR2_TXDMAEN;
         
-    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);    // digitalWrite(1, HIGH);
+    // HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);    // digitalWrite(1, HIGH);
     return HAL_OK;
   }
   else
