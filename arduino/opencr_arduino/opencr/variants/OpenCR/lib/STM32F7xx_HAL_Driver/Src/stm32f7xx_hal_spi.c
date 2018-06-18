@@ -1445,17 +1445,27 @@ HAL_StatusTypeDef HAL_SPI_Receive_DMA(SPI_HandleTypeDef *hspi, uint8_t *pData, u
   * @param  Size: amount of data to be sent
   * @retval HAL status
   */
+static uint8_t pRxDummy[1]; 
+static uint8_t pTxDummy[1] = {0};  // currently hard coded to send 0's 
+
 HAL_StatusTypeDef HAL_SPI_TransmitReceive_DMA(SPI_HandleTypeDef *hspi, uint8_t *pTxData, uint8_t *pRxData, uint32_t Size)
 {
   assert_param(IS_SPI_DIRECTION_2LINES(hspi->Init.Direction));
-//  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 1);    // digitalWrite(1, HIGH);
 
   if((hspi->State == HAL_SPI_STATE_READY) ||
      ((hspi->Init.Mode == SPI_MODE_MASTER) && (hspi->Init.Direction == SPI_DIRECTION_2LINES) && (hspi->State == HAL_SPI_STATE_BUSY_RX)))
   {
-    if((pTxData == NULL ) || (pRxData == NULL ) || (Size == 0)) 
+//    if((pTxData == NULL ) || (pRxData == NULL ) || (Size == 0)) 
+    if(Size == 0)
     {
       return  HAL_ERROR;                                    
+    }
+    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 1);    // digitalWrite(1, HIGH);
+
+    // More tests
+    if (pTxDummy[0] != 0) {
+        vcp_printf("HSP TRDMA: %x!=0\n", pTxDummy[0]);
+
     }
     
     /* Process locked */
@@ -1469,9 +1479,25 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive_DMA(SPI_HandleTypeDef *hspi, uint8_t *
     
     hspi->ErrorCode   = HAL_SPI_ERROR_NONE;
     hspi->pTxBuffPtr  = (uint8_t *)pTxData;
+    if (pTxData)
+    {
+      SET_BIT(hspi->hdmatx->Instance->CR, DMA_SxCR_MINC);
+    } else {
+      pTxData  = (uint8_t *)pTxDummy;   // Send a constant value out
+      CLEAR_BIT(hspi->hdmatx->Instance->CR, DMA_SxCR_MINC);
+    }
+
     hspi->TxXferSize  = Size;
     hspi->TxXferCount = Size;
+    // check to see if user passed in buffer?
     hspi->pRxBuffPtr  = (uint8_t *)pRxData;
+    if (pRxData) 
+    {
+      SET_BIT(hspi->hdmarx->Instance->CR, DMA_SxCR_MINC);
+    } else {
+      pRxData  = (uint8_t *)pRxDummy;   // Use dummy to receive
+      CLEAR_BIT(hspi->hdmarx->Instance->CR, DMA_SxCR_MINC);
+    }
     hspi->RxXferSize  = Size;
     hspi->RxXferCount = Size;
     
@@ -1538,7 +1564,7 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive_DMA(SPI_HandleTypeDef *hspi, uint8_t *
     }
     else
     {	
-       hspi->hdmarx->XferHalfCpltCallback = SPI_DMAHalfTransmitReceiveCplt;
+      hspi->hdmarx->XferHalfCpltCallback = SPI_DMAHalfTransmitReceiveCplt;
       hspi->hdmarx->XferCpltCallback = SPI_DMATransmitReceiveCplt;
     }
     /* Set the DMA error callback */
@@ -1548,7 +1574,7 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive_DMA(SPI_HandleTypeDef *hspi, uint8_t *
     hspi->Instance->CR2 |= SPI_CR2_RXDMAEN;
     
     /* Enable the Rx DMA channel */
-    HAL_DMA_Start_IT(hspi->hdmarx, (uint32_t)&hspi->Instance->DR, (uint32_t) hspi->pRxBuffPtr, hspi->RxXferCount);
+    HAL_DMA_Start_IT(hspi->hdmarx, (uint32_t)&hspi->Instance->DR, (uint32_t)pRxData, hspi->RxXferCount);
     
     /* Set the SPI Tx DMA transfer complete callback as NULL because the communication closing
     is performed in DMA reception complete callback  */
@@ -1566,7 +1592,7 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive_DMA(SPI_HandleTypeDef *hspi, uint8_t *
     } 
     
     /* Enable the Tx DMA channel */
-    HAL_DMA_Start_IT(hspi->hdmatx, (uint32_t)hspi->pTxBuffPtr, (uint32_t)&hspi->Instance->DR, hspi->TxXferCount);
+    HAL_DMA_Start_IT(hspi->hdmatx, (uint32_t)pTxData, (uint32_t)&hspi->Instance->DR, hspi->TxXferCount);
 
     /* Process Unlocked */
     __HAL_UNLOCK(hspi);
@@ -1581,7 +1607,7 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive_DMA(SPI_HandleTypeDef *hspi, uint8_t *
     /* Enable Tx DMA Request */  
     hspi->Instance->CR2 |= SPI_CR2_TXDMAEN;
         
-//    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);    // digitalWrite(1, HIGH);
+    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);    // digitalWrite(1, HIGH);
     return HAL_OK;
   }
   else

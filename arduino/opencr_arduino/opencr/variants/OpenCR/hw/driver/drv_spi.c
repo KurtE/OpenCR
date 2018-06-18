@@ -154,22 +154,19 @@ void drv_spi_start_dma_tx(SPI_HandleTypeDef* hspi, uint8_t *p_buf, uint32_t leng
   if ((pspi_dma == NULL) || (pspi_dma->use != true)) return ;
 
   pspi_dma->transfer_done       = false;
-  pspi_dma->p_tx_buf      =  p_buf;
+  pspi_dma->length_left     = length;
+  pspi_dma->p_tx_buf        =  p_buf;
+  pspi_dma->p_rx_buf        = NULL;   // this will funnel through txrx is set to NULL
   pspi_dma->transfer_done   = false;
   pspi_dma->dma_callback    = dma_callback;
-
+  
   if(length > SPI_TX_DMA_MAX_LENGTH)
-  {
-    pspi_dma->length_left= length - SPI_TX_DMA_MAX_LENGTH;
+    length = SPI_TX_DMA_MAX_LENGTH;
 
-    HAL_SPI_Transmit_DMA(hspi, pspi_dma->p_tx_buf, SPI_TX_DMA_MAX_LENGTH);
-  }
-  else
-  {
-    pspi_dma->length_left= 0;
+  pspi_dma->length_left -= length;
 
-    HAL_SPI_Transmit_DMA(hspi, pspi_dma->p_tx_buf, length);
-  }
+  HAL_SPI_TransmitReceive_DMA(hspi, pspi_dma->p_tx_buf, NULL, length);
+  //HAL_SPI_Transmit_DMA(hspi, pspi_dma->p_tx_buf, SPI_TX_DMA_MAX_LENGTH);
 }
 
 void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi)
@@ -189,7 +186,8 @@ void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi)
         length = SPI_TX_DMA_MAX_LENGTH;
       }
       pspi_dma->length_left -= length;
-      HAL_SPI_Transmit_DMA(hspi, pspi_dma->p_tx_buf, length);
+      //HAL_SPI_Transmit_DMA(hspi, pspi_dma->p_tx_buf, length);
+      HAL_SPI_TransmitReceive_DMA(hspi, pspi_dma->p_tx_buf, NULL, length);
     }
     else
     {
@@ -331,20 +329,27 @@ void drv_spi_start_dma_txrx(SPI_HandleTypeDef* hspi, uint8_t *p_buf, uint8_t *p_
 void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
 {
   volatile spi_dma_t *pspi_dma = drv_map_haspi_to_spi_dma(hspi);
-  //HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 1);    // digitalWrite(0, HIGH);
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 1);    // digitalWrite(0, HIGH);
   if (pspi_dma && (hspi->Instance != SPI1))
   {
     volatile uint32_t length = pspi_dma->length_left;
     if(length > 0)
     {
-      pspi_dma->p_rx_buf += SPI_TX_DMA_MAX_LENGTH;
-      pspi_dma->p_tx_buf += SPI_TX_DMA_MAX_LENGTH;
+      if (pspi_dma->p_rx_buf)
+      {
+        pspi_dma->p_rx_buf += SPI_TX_DMA_MAX_LENGTH;
+      }
+      if (pspi_dma->p_tx_buf)
+      {
+        pspi_dma->p_tx_buf += SPI_TX_DMA_MAX_LENGTH;
+      }
 
       if (length > SPI_TX_DMA_MAX_LENGTH)
       {
         length = SPI_TX_DMA_MAX_LENGTH;
       }
       pspi_dma->length_left -= length;
+      //vcp_printf("TxRxCB: %x %x %d\n", (uint32_t)pspi_dma->p_tx_buf, (uint32_t)pspi_dma->p_rx_buf, length);
       HAL_SPI_TransmitReceive_DMA(hspi, pspi_dma->p_tx_buf, pspi_dma->p_rx_buf, length);
     }
     else
@@ -357,7 +362,7 @@ void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
     }
 
   }
-  //HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 0);    // digitalWrite(0, LOW);
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 0);    // digitalWrite(0, LOW);
 }
 
 

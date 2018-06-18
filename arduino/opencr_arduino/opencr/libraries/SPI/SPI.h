@@ -82,8 +82,12 @@ private:
     init_Inline(clock, bitOrder, dataMode);
   }
 
+
+//The devices feature up to six SPIs in slave and master modes in full-duplex and simplex communication modes. 
+// SPI1, SPI4, SPI5, and SPI6 can communicate at up to 50 Mbits/s, SPI2 and SPI3 can communicate at up to 25 Mbit/s. 
   void init_Inline(uint32_t clock, uint8_t bitOrder, uint8_t dataMode) 
     __attribute__((__always_inline__))  {
+#if 0
       if (clock >= 50000000 / 2) {
         _clockDiv = SPI_CLOCK_DIV2;
       } else if (clock >= 50000000 / 4) {
@@ -99,12 +103,15 @@ private:
       } else {
         _clockDiv = SPI_CLOCK_DIV64;
       }
-
+#else
+      _clock = clock;
+#endif      
       _bitOrder = bitOrder;
       _dataMode = dataMode;
   }
 
-  uint8_t _clockDiv;
+  //uint8_t _clockDiv;
+  uint32_t _clock;
   uint8_t _bitOrder;
   uint8_t _dataMode;
 
@@ -114,15 +121,15 @@ private:
 
 class SPIClass {
   public:
-    SPIClass(SPI_TypeDef *spiPort);
+    SPIClass(SPI_TypeDef *spiPort, uint32_t spi_clock);
     SPIClass(uint8_t spiPort);
     void begin(void);
     void beginFast(void);
 
     void beginTransaction(SPISettings settings)
     {
-      if (settings._clockDiv != _clockDiv) {
-        setClockDivider(settings._clockDiv);
+      if (settings._clock != _clock) {
+        setClock(settings._clock);
       }
       if (settings._bitOrder != _bitOrder) {
         setBitOrder(settings._bitOrder);
@@ -155,6 +162,7 @@ class SPIClass {
 
     void setBitOrder(uint8_t bitOrder);
     void setClockDivider(uint8_t clockDiv);
+    void setClock(uint32_t clock);
     void setDataMode(uint8_t dataMode);
 
 #ifdef SPI_HAS_TRANSFER_ASYNC
@@ -176,10 +184,10 @@ class SPIClass {
     uint32_t _CRCCalculation;
     uint32_t _CRCPolynomial;
     // Keep track of values we set for transactions 
-    uint8_t _clockDiv;
+    uint32_t _clock;
     uint8_t _bitOrder;
     uint8_t _dataMode;
-
+    uint32_t _spi_clock;   
 
     SPI_HandleTypeDef *_hspi;
     SPI_TypeDef *_spiPort;

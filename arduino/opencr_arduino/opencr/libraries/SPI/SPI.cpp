@@ -22,12 +22,12 @@
 
 
 /* Create an SPIClass instance */
-SPIClass SPI    (SPI2);
-SPIClass SPI_IMU(SPI1);
-SPIClass SPI_EXT(SPI4);
+SPIClass SPI    (SPI2, 50000000);
+SPIClass SPI_IMU(SPI1, 100000000);
+SPIClass SPI_EXT(SPI4, 100000000);
 
 
-SPIClass::SPIClass(SPI_TypeDef *spiPort) {
+SPIClass::SPIClass(SPI_TypeDef *spiPort, uint32_t spi_clock) {
   _spiPort = spiPort;
 
   if(spiPort == SPI1)
@@ -36,6 +36,7 @@ SPIClass::SPIClass(SPI_TypeDef *spiPort) {
     _hspi = &hspi2;
   else if(spiPort == SPI4)
     _hspi = &hspi4;
+  _spi_clock = spi_clock;
 }
 
 /**
@@ -72,7 +73,7 @@ void SPIClass::beginFast(void) {
 
 void SPIClass::init(void){
   // Keep track of transaction logical values.
-  _clockDiv = SPI_CLOCK_DIV16;
+  //_clockDiv = SPI_CLOCK_DIV16;
   _bitOrder = MSBFIRST;
   _dataMode = SPI_MODE0;
   _dma_state = DMA_NOTINITIALIZED;
@@ -221,7 +222,7 @@ void SPIClass::setBitOrder(uint8_t bitOrder) {
 
 
 void SPIClass::setClockDivider(uint8_t clockDiv) {
-  _clockDiv = clockDiv;
+  _clock = 0;   // clear out so we will set in setClock
   switch(clockDiv){
     case SPI_CLOCK_DIV2:
       _hspi->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
@@ -247,6 +248,28 @@ void SPIClass::setClockDivider(uint8_t clockDiv) {
     case SPI_CLOCK_DIV256:
       _hspi->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256;
     break;
+  }
+  HAL_SPI_Init(_hspi);
+}
+
+void SPIClass::setClock(uint32_t clock) {
+  _clock = clock; // remember our new clock  
+  if (clock >= _spi_clock / 2) {
+    _hspi->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
+  } else if (clock >= _spi_clock / 4) {
+    _hspi->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
+  } else if (clock >= _spi_clock / 8) {
+    _hspi->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8;
+  } else if (clock >= _spi_clock / 16) {
+    _hspi->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
+  } else if (clock >= _spi_clock / 32) {
+    _hspi->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
+  } else if (clock >= _spi_clock / 64) {
+    _hspi->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_64;
+  } else if (clock >= _spi_clock / 128) {
+    _hspi->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_128;
+  } else {
+    _hspi->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_128;  // Our slowest mode
   }
   HAL_SPI_Init(_hspi);
 }
@@ -311,7 +334,11 @@ bool SPIClass::transfer(const void *buf, void *retbuf, size_t count, EventRespon
   if ((count == 0) || ((buf == NULL) && (retbuf == NULL))) return false;    // nothing to do
 
   _dma_event_responder = &event_responder;  // remember the event object
-  bool dma_enabled = drv_spi_dma_enabled(_hspi);
+  //bool dma_enabled = drv_spi_dma_enabled(_hspi);
+#if 1
+  // new version handles where buf or retbuf are null
+  drv_spi_start_dma_txrx(_hspi, (uint8_t *)buf, (uint8_t *)retbuf, count, &dmaCallback);
+#else  
   if (retbuf == NULL) { 
     // write only transfer
     drv_spi_start_dma_tx(_hspi, (uint8_t *)buf, count, &dmaCallback);
@@ -325,6 +352,7 @@ bool SPIClass::transfer(const void *buf, void *retbuf, size_t count, EventRespon
 //    Serial.println("Before drv_spi_start_dma_txrx");
     drv_spi_start_dma_txrx(_hspi, (uint8_t *)buf, (uint8_t *)retbuf, count, &dmaCallback);
   }
+#endif  
   _dma_state = DMA_ACTIVE;
   return true;
 }
