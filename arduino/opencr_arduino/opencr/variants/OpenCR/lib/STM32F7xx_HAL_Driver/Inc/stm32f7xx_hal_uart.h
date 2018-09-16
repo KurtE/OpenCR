@@ -154,7 +154,9 @@ typedef enum
   HAL_UART_STATE_BUSY_RX           = 0x22,    /*!< Data Reception process is ongoing                  */
   HAL_UART_STATE_BUSY_TX_RX        = 0x32,    /*!< Data Transmission and Reception process is ongoing */
   HAL_UART_STATE_TIMEOUT           = 0x03,    /*!< Timeout state                                      */
-  HAL_UART_STATE_ERROR             = 0x04     /*!< Error                                              */
+  HAL_UART_STATE_ERROR             = 0x04,    /*!< Error                                              */
+  HAL_UART_STATE_BUSY_TX_BIT       = 0x10,    /*!< Data Transmission process is ongoing               */
+  HAL_UART_STATE_BUSY_RX_BIT       = 0x20    /*!< Data Reception process is ongoing                  */
 }HAL_UART_StateTypeDef;
 
 /**
@@ -169,6 +171,15 @@ typedef enum
   UART_CLOCKSOURCE_LSE        = 0x08,    /*!< LSE clock source       */
   UART_CLOCKSOURCE_UNDEFINED  = 0x10     /*!< Undefined clock source */
 }UART_ClockSourceTypeDef;
+
+#define SERIAL_BUFFER_SIZE 2048
+struct ring_buffer
+{
+  uint8_t buffer[SERIAL_BUFFER_SIZE];
+  volatile uint16_t iHead;
+  volatile uint16_t iTail;
+};
+
 
 /**
   * @brief  UART handle Structure definition
@@ -198,12 +209,15 @@ typedef struct
   DMA_HandleTypeDef        *hdmatx;          /*!< UART Tx DMA Handle parameters      */
 
   DMA_HandleTypeDef        *hdmarx;          /*!< UART Rx DMA Handle parameters      */
-
+  __IO uint32_t            *_transmit_pin_BSRR; /*!< Optional Port BSRR  */
+  uint32_t                  _transmit_pin_abstraction; /* Optional output pin abstraction into port */
   HAL_LockTypeDef           Lock;            /*!< Locking object                     */
 
   __IO HAL_UART_StateTypeDef    State;       /*!< UART communication state           */
 
   __IO uint32_t             ErrorCode;   /*!< UART Error code                    */
+  struct ring_buffer        tx_buffer;
+
 
 }UART_HandleTypeDef;
 
@@ -1083,6 +1097,7 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart);
 
 /* IO operation functions *****************************************************/
 HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size, uint32_t Timeout);
+HAL_StatusTypeDef HAL_UART_Transmit_FIFO(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size);
 HAL_StatusTypeDef HAL_UART_Receive(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size, uint32_t Timeout);
 HAL_StatusTypeDef HAL_UART_Transmit_IT(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size);
 HAL_StatusTypeDef HAL_UART_Receive_IT(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size);

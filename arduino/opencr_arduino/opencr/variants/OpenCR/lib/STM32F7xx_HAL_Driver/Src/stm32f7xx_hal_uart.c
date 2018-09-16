@@ -686,6 +686,131 @@ HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, uint8_t *pData, u
 }
 
 /**
+  * @brief  Sends an amount of data in non blocking mode.
+  * @param  huart: Pointer to a UART_HandleTypeDef structure that contains
+  *                the configuration information for the specified UART module.
+  * @param  pData: Pointer to data buffer
+  * @param  Size: Amount of data to be sent
+  * @retval HAL status
+  */
+HAL_StatusTypeDef HAL_UART_Transmit_FIFO(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size)
+{
+  uint32_t tmp_state;
+  tmp_state = huart->State;
+
+  // Validate the information. 
+  if ((pData == NULL ) || (Size == 0))
+  {
+    return HAL_ERROR;
+  }
+  
+  huart->pTxBuffPtr = pData;
+  huart->TxXferSize = Size;
+  huart->TxXferCount = Size;
+
+  /* Process Locked */
+  __HAL_LOCK(huart);
+
+  __HAL_UART_DISABLE_IT(huart, UART_IT_TXE);  // Don't have interrupts while we are processing the new output
+  __HAL_UART_DISABLE_IT(huart, UART_IT_TC);  // Don't have interrupts while we are processing the new output
+
+  // If we have a Transmit pin defined set it low to enable the write outputs. 
+  if (huart->_transmit_pin_BSRR)
+  {
+    *(huart->_transmit_pin_BSRR) = huart->_transmit_pin_abstraction;  // Set the IO pin HIGH for TX enable
+  }
+
+  while (Size--)
+  {
+    // See if the Queue is empty and if Uart is ready for an input... 
+    if ((huart->tx_buffer.iHead == huart->tx_buffer.iTail) && (__HAL_UART_GET_FLAG(huart, UART_FLAG_TXE) != RESET) ) 
+    {
+      // BUGBUG: only handling 8 bit stuff as top level does not appear to be handling others...
+      huart->Instance->TDR = (uint8_t)(*pData & 0xff);
+      pData++;
+    }
+    else
+    {
+      // Nope lets save aways the stuff in our buffer
+      // If busy we buffer
+      int nextWrite = (huart->tx_buffer.iHead + 1) % SERIAL_BUFFER_SIZE;
+
+      // See if the queue is full...  
+      if (huart->tx_buffer.iTail == nextWrite) 
+      {
+        if(huart->State == HAL_UART_STATE_BUSY_RX) 
+        {
+          huart->State = HAL_UART_STATE_BUSY_TX_RX;
+        }
+        else
+        {
+          huart->State = HAL_UART_STATE_BUSY_TX;
+        }
+
+        /* Process Unlocked */
+        __HAL_UNLOCK(huart);
+
+        /* Enable the UART Transmit data register empty Interrupt */
+        __HAL_UART_ENABLE_IT(huart, UART_IT_TXE);
+
+        while (huart->tx_buffer.iTail == nextWrite) 
+        {
+            // delayMicroseconds(5);
+            // maybe do timeout?
+        }
+
+        /* Process Locked */
+        __HAL_LOCK(huart);
+      }
+      // now lets save away the character. 
+      huart->tx_buffer.buffer[huart->tx_buffer.iHead] = *pData++;
+      huart->tx_buffer.iHead = nextWrite;
+    }
+  }
+ 
+  // If we get to here and we TXE bit is set and we have
+  // something on queue, then we can go ahead and push it...
+  // Maybe keeping from another interrupt.
+  // See if the Queue is empty and if Uart is ready for an input... 
+  if ((huart->tx_buffer.iHead != huart->tx_buffer.iTail) && (__HAL_UART_GET_FLAG(huart, UART_FLAG_TXE) != RESET) ) 
+  {
+    // BUGBUG: only handling 8 bit stuff as top level does not appear to be handling others...
+    huart->Instance->TDR = huart->tx_buffer.buffer[huart->tx_buffer.iTail];
+    huart->tx_buffer.iTail = (unsigned int)(huart->tx_buffer.iTail + 1) % SERIAL_BUFFER_SIZE;
+  }
+
+  // We will need to enable the TX... 
+  huart->ErrorCode = HAL_UART_ERROR_NONE;
+  if(huart->State == HAL_UART_STATE_BUSY_RX) 
+  {
+    huart->State = HAL_UART_STATE_BUSY_TX_RX;
+  }
+  else
+  {
+    huart->State = HAL_UART_STATE_BUSY_TX;
+  }
+
+  /* Process Unlocked */
+  __HAL_UNLOCK(huart);
+
+  if (huart->tx_buffer.iHead != huart->tx_buffer.iTail) 
+  {
+    // Have additional stuff to output... 
+    if (__HAL_UART_GET_IT_SOURCE(huart, UART_IT_TXE) == RESET)
+      __HAL_UART_ENABLE_IT(huart, UART_IT_TXE);
+  }
+  else 
+  {
+    // No data in queue so lets simply unlock
+    // Only interrupt on transmit complete. 
+    __HAL_UART_DISABLE_IT(huart, UART_IT_TXE);
+    __HAL_UART_ENABLE_IT(huart, UART_IT_TC);
+  }
+    
+  return HAL_OK;
+}
+
+/**
   * @brief Receive an amount of data in blocking mode 
   * @param huart: uart handle
   * @param pData: pointer to data buffer

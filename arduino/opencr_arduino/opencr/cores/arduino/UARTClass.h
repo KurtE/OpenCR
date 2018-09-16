@@ -52,6 +52,7 @@ class UARTClass : public HardwareSerial
     int read(void);
     void flush(void);
     size_t write(const uint8_t c);
+    size_t write(const uint8_t *buffer, size_t size); 
     using Print::write; // pull in write(str) and write(buf, size) from Print
 
 
@@ -59,6 +60,7 @@ class UARTClass : public HardwareSerial
     void TxHandler(void); /* Vassilis Serasidis */
     uint32_t getBaudRate(void);
 
+    void     transmitterEnable(uint8_t pin);
     uint32_t getRxCnt(void);
     uint32_t getTxCnt(void);
 
@@ -79,7 +81,7 @@ class UARTClass : public HardwareSerial
     uint32_t _uart_baudrate;
 
     uint8_t r_byte;
-    ring_buffer tx_buffer;
+    //ring_buffer tx_buffer;
     ring_buffer rx_buffer;
 
     uint32_t rx_cnt;

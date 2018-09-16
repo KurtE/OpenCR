@@ -20,8 +20,8 @@
 #include <stdio.h>
 #include <string.h>
 #include "UARTClass.h"
-
-
+#include "wiring_digital.h"
+#include "wiring_constants.h"
 // Constructors ////////////////////////////////////////////////////////////////
 UARTClass::UARTClass(void){
 
@@ -46,7 +46,7 @@ void UARTClass::begin(const uint32_t dwBaudRate, const UARTModes config)
   UNUSED(config);
 
   rx_buffer.iHead = rx_buffer.iTail = 0;
-  tx_buffer.iHead = tx_buffer.iTail = 0;
+  //tx_buffer.iHead = tx_buffer.iTail = 0;
 
   _uart_baudrate = dwBaudRate;
 
@@ -76,10 +76,7 @@ int UARTClass::available( void )
 
 int UARTClass::availableForWrite(void)
 {
-  int head = tx_buffer.iHead;
-  int tail = tx_buffer.iTail;
-  if (head >= tail) return SERIAL_BUFFER_SIZE - 1 - head + tail;
-  return tail - head - 1;
+  return drv_uart_tx_available(_uart_num);
 }
 
 int UARTClass::peek( void )
@@ -112,8 +109,7 @@ int UARTClass::read( void )
 
 void UARTClass::flush( void )
 {
-  while (tx_buffer.iHead != tx_buffer.iTail); //wait for transmit data to be sent
-  // Wait for transmission to complete
+  drv_uart_flush(_uart_num);
 }
 
 size_t UARTClass::write( const uint8_t uc_data )
@@ -121,6 +117,13 @@ size_t UARTClass::write( const uint8_t uc_data )
   tx_cnt++;
   return drv_uart_write(_uart_num, uc_data);
 }
+
+size_t UARTClass::write( const uint8_t *buffer, size_t size )
+{
+  tx_cnt += size;
+  return drv_uart_write_buf(_uart_num, buffer, size);
+}
+
 
 uint32_t UARTClass::getBaudRate( void )
 {
@@ -137,6 +140,11 @@ uint32_t UARTClass::getTxCnt(void)
   return tx_cnt;
 }
 
+void UARTClass::transmitterEnable(uint8_t pin) 
+{
+  if (pin < 100)  pinMode(pin, OUTPUT); // make sure enabled as output pin. 
+  drv_uart_set_transmit_enable_pin(_uart_num, pin);
+}
 
 void UARTClass::RxHandler (void)
 {
