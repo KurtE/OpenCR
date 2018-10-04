@@ -35,6 +35,7 @@ UARTClass::UARTClass(uint8_t uart_num, uint8_t uart_mode, uint8_t *txBuffer, uin
   _uart_mode = uart_mode;
   _uart_baudrate = 0;
   rx_cnt = 0;
+  tx_cnt = 0;
   tx_write_size = 0;
   _transmit_pin_BSRR = 0;  // Assume no transmit pin selected...
   tx_buffer.buffer = txBuffer;
@@ -50,7 +51,9 @@ void UARTClass::begin(const uint32_t dwBaudRate, const UARTModes config)
 {
   UNUSED(config);
 
+#ifdef DRV_UART_RX_DMA_ONLY
   rx_buffer.iHead = rx_buffer.iTail = 0;
+#endif
   tx_buffer.iHead = 0;
   tx_buffer.iTail = 0;
 
@@ -62,14 +65,16 @@ void UARTClass::begin(const uint32_t dwBaudRate, const UARTModes config)
 void UARTClass::end( void )
 {
   // Clear any received data
+#ifdef DRV_UART_RX_DMA_ONLY
   rx_buffer.iHead = rx_buffer.iTail;
-
+#endif
   // Wait for any outstanding data to be sent
   flush();
 }
 
 int UARTClass::available( void )
 {
+#ifdef DRV_UART_RX_DMA_ONLY
   if(drv_uart_get_mode(_uart_num) == DRV_UART_IRQ_MODE )
   {
     return (uint32_t)(SERIAL_BUFFER_SIZE + rx_buffer.iHead - rx_buffer.iTail) % SERIAL_BUFFER_SIZE;
@@ -78,6 +83,9 @@ int UARTClass::available( void )
   {
     return drv_uart_available(_uart_num);
   }
+#else
+  return drv_uart_available(_uart_num);
+#endif  
 }
 
 int UARTClass::availableForWrite(void)
@@ -90,6 +98,7 @@ int UARTClass::availableForWrite(void)
 
 int UARTClass::peek( void )
 {
+#ifdef DRV_UART_RX_DMA_ONLY
   if(drv_uart_get_mode(_uart_num) == DRV_UART_IRQ_MODE )
   {
     if ( rx_buffer.iHead == rx_buffer.iTail )
@@ -101,10 +110,14 @@ int UARTClass::peek( void )
   {
     return drv_uart_peek(_uart_num);
   }
+#else
+  return drv_uart_peek(_uart_num);
+#endif  
 }
 
 int UARTClass::read( void )
 {
+#ifdef DRV_UART_RX_DMA_ONLY
   if(drv_uart_get_mode(_uart_num) == DRV_UART_IRQ_MODE )
   {
     // if the head isn't ahead of the tail, we don't have any characters
@@ -125,6 +138,14 @@ int UARTClass::read( void )
     }
     return return_value; 
   }
+#else
+  int return_value = drv_uart_read(_uart_num);
+  if (return_value != -1) 
+  {
+    rx_cnt++;
+  }
+  return return_value; 
+#endif  
 }
 
 void UARTClass::flush( void )
@@ -134,6 +155,7 @@ void UARTClass::flush( void )
 
 void UARTClass::flushRx( uint32_t timeout_ms )
 {
+#ifdef DRV_UART_RX_DMA_ONLY
   if(drv_uart_get_mode(_uart_num) == DRV_UART_IRQ_MODE )
   {
     // sort of hack, wait the time specified and then just clear it
@@ -151,6 +173,9 @@ void UARTClass::flushRx( uint32_t timeout_ms )
   {
     drv_uart_rx_flush(_uart_num, timeout_ms);
   }
+#else
+  drv_uart_rx_flush(_uart_num, timeout_ms);
+#endif  
 }
 
 size_t UARTClass::write( const uint8_t uc_data )
@@ -244,8 +269,7 @@ void UARTClass::transmitterEnable(uint8_t pin)
 
 void UARTClass::RxHandler (void)
 {
-
-
+#ifdef DRV_UART_RX_DMA_ONLY
   if( _uart_mode == DRV_UART_IRQ_MODE )
   {
 
@@ -257,6 +281,7 @@ void UARTClass::RxHandler (void)
     }
     drv_uart_start_rx(_uart_num);
   }
+#endif
 }
 
 void UARTClass::TxHandler(void)

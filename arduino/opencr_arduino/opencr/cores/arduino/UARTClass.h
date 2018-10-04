@@ -69,12 +69,14 @@ class UARTClass : public HardwareSerial
 
   protected:
     void inline startNextTransmitDMAorIT(void);
+#ifdef DRV_UART_RX_DMA_ONLY
     struct ring_buffer
     {
       uint8_t buffer[SERIAL_BUFFER_SIZE];
       volatile uint16_t iHead;
       volatile uint16_t iTail;
     };
+#endif    
     struct tx_no_cache_buffer 
     {
       uint8_t *buffer;
@@ -90,8 +92,9 @@ class UARTClass : public HardwareSerial
     uint8_t r_byte;
     volatile uint16_t    tx_write_size;
     tx_no_cache_buffer tx_buffer;
+#ifdef DRV_UART_RX_DMA_ONLY
     ring_buffer rx_buffer;
-
+#endif
     uint32_t rx_cnt;
     uint32_t tx_cnt;
     volatile uint32_t *_transmit_pin_BSRR; /*!< Optional Port BSRR  */

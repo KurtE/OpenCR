@@ -30,6 +30,7 @@
 #define DRV_UART_IRQ_MODE       0
 #define DRV_UART_DMA_MODE       1
 
+//#define DRV_UART_RX_DMA_ONLY	1  
 
 int      drv_uart_init();
 void     drv_uart_begin(uint8_t uart_num, uint8_t uart_mode, uint32_t baudrate);
