@@ -37,7 +37,6 @@ UARTClass::UARTClass(uint8_t uart_num, uint8_t uart_mode, uint8_t *txBuffer, uin
   rx_cnt = 0;
   tx_cnt = 0;
   tx_write_size = 0;
-  _transmit_pin_BSRR = 0;  // Assume no transmit pin selected...
   tx_buffer.buffer = txBuffer;
   tx_buffer.buffer_size = tx_buffer_size;
 }
@@ -205,11 +204,6 @@ size_t UARTClass::write( const uint8_t *buffer, size_t size )
       // See if we have an active TX or not
       if (!tx_write_size)
       {
-        if (_transmit_pin_BSRR)
-        {
-//          digitalWriteFast(2, HIGH);
-          *(_transmit_pin_BSRR) =  _transmit_pin_abstraction;  // Set Transmit pin HIGH after we complete
-        }
         startNextTransmitDMAorIT();
       }
       // right now this will wait for the entire previous write to complete before continue...
@@ -226,11 +220,6 @@ size_t UARTClass::write( const uint8_t *buffer, size_t size )
   // or if it is already going. 
   if (!tx_write_size)
   {
-    if (_transmit_pin_BSRR)
-    {
-//    digitalWriteFast(2, HIGH);
-    *(_transmit_pin_BSRR) =  _transmit_pin_abstraction;  // Set Transmit pin HIGH after we complete
-    }
     startNextTransmitDMAorIT();
   }
   return size; 
@@ -252,20 +241,6 @@ uint32_t UARTClass::getTxCnt(void)
   return tx_cnt;
 }
 
-void UARTClass::transmitterEnable(uint8_t pin) 
-{
-  // Validate Pin?  Should define max pin in variant?  
-  if (pin < 100) 
-  {
-    pinMode(pin, OUTPUT); // make sure enabled as output pin. 
-    _transmit_pin_BSRR = &g_Pin2PortMapArray[pin].GPIOx_Port->BSRR;
-    _transmit_pin_abstraction = g_Pin2PortMapArray[pin].Pin_abstraction;
-  }
-  else 
-  {
-    _transmit_pin_BSRR = NULL;  // no output pin...
-  }
-}
 
 void UARTClass::RxHandler (void)
 {
@@ -299,11 +274,5 @@ void UARTClass::TxHandler(void)
   {
     // finished all outstanding writes so lets set count to 0
     tx_write_size = 0;
-
-    if (_transmit_pin_BSRR)
-    {
-      *(_transmit_pin_BSRR) =  (_transmit_pin_abstraction << 16);  // Set Transmit pin low after we complete
-    }
-//    digitalWriteFast(2, LOW);
   }
 }

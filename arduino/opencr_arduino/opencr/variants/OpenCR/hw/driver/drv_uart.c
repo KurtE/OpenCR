@@ -172,6 +172,10 @@ uint32_t drv_uart_read_buf(uint8_t uart_num, uint8_t *p_buf, uint32_t length)
   {
 
   }
+#else
+  UNUSED(uart_num);
+  UNUSED(p_buf);
+  UNUSED(length);  
 #endif
   return ret;
 }

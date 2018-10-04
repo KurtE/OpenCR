@@ -60,7 +60,6 @@ class UARTClass : public HardwareSerial
     void TxHandler(void); /* Vassilis Serasidis */
     uint32_t getBaudRate(void);
 
-    void     transmitterEnable(uint8_t pin);
     uint32_t getRxCnt(void);
     uint32_t getTxCnt(void);
 
@@ -97,9 +96,6 @@ class UARTClass : public HardwareSerial
 #endif
     uint32_t rx_cnt;
     uint32_t tx_cnt;
-    volatile uint32_t *_transmit_pin_BSRR; /*!< Optional Port BSRR  */
-    uint32_t           _transmit_pin_abstraction; /* Optional output pin abstraction into port */
-
 };
 
 #endif // _UART_CLASS_

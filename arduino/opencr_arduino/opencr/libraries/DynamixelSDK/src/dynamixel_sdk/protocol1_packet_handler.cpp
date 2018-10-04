@@ -322,9 +322,6 @@ int Protocol1PacketHandler::txRxPacket(PortHandler *port, uint8_t *txpacket, uin
         port->is_using_ = false;
         return result;
     }
-    
-    // Make sure the writes complete before we start timeout.
-    port->flushPort();  // make sure all writes have completed first...
 
     // set packet timeout
     if (txpacket[PKT_INSTRUCTION] == INST_READ)

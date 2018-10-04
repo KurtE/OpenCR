@@ -2,7 +2,6 @@
 Serial4	KEYWORD1
 printf	KEYWORD2
 flushRx	KEYWORD2
-transmitterEnable	KEYWORD2
 getBaudRate	KEYWORD2
 getRxCnt	KEYWORD2
 getTxCnt	KEYWORD2

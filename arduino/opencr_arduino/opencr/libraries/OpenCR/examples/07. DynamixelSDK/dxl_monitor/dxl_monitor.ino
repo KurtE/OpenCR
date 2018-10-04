@@ -20,7 +20,6 @@
 void setup()
 {
   CMD_SERIAL.begin(57600);
-  pinMode(2, OUTPUT);
 }
 
 void loop()
